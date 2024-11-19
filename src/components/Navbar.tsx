@@ -1,15 +1,25 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
+import { Github } from "lucide-react";
 import { Switch } from "./ui/switch";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 const LinksData = [
-  { name: "Home", href: "/" },
-  { name: "Blog", href: "/blog" },
-  { name: "Single Post", href: "/post" },
-  { name: "Pages", href: "/pages" },
-  { name: "Contact", href: "/contact" },
+  {
+    name: "Home",
+  },
+  {
+    name: "Blog",
+  },
+  {
+    name: "Single Post",
+  },
+  {
+    name: "Pages",
+  },
+  {
+    name: "Contact",
+  },
 ];
 
 const Navbar = () => {
@@ -26,13 +36,19 @@ const Navbar = () => {
           <ul className="flex gap-x-16 text-sm">
             {LinksData.map((item, index) => (
               <li key={index}>
-                <Link href={item.href}>{item.name}</Link>
+                <Link href={"/"}>{item.name}</Link>
               </li>
             ))}
           </ul>
         </div>
         <div>
           <div className="flex gap-x-8 items-center">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
             <Switch />
           </div>
         </div>
