@@ -11,6 +11,8 @@
   "dependencies": {
     "@clerk/nextjs": "^6.4.0",
     "@radix-ui/react-switch": "^1.1.1",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.46.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide": "^0.460.0",

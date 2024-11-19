@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Switch } from "./ui/switch";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 const LinksData = [
   { name: "Home", href: "/" },
@@ -34,12 +33,6 @@ const Navbar = () => {
         </div>
         <div>
           <div className="flex gap-x-8 items-center">
-            <SignedOut>
-              <SignInButton aria-label="Sign in" />
-            </SignedOut>
-            <SignedIn>
-              <UserButton aria-label="User menu" />
-            </SignedIn>
             <Switch />
           </div>
         </div>
