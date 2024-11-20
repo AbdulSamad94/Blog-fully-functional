@@ -1,10 +1,10 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
 const inter = Work_Sans({ subsets: ["latin"] });
-import { ClerkProvider } from "@clerk/nextjs";
+import SessionWrapper from "@/components/SessionWrapper";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,20 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <SessionWrapper>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navbar />
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Header />
             {children}
           </ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </SessionWrapper>
   );
 }
