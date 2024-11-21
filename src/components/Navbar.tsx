@@ -18,11 +18,14 @@ const LinksData = [
   },
 ];
 
-const Navbar = () => {
+interface StylingComponents {
+  styling?: string;
+}
+const Navbar = ({ styling }: StylingComponents) => {
   return (
     <nav className="px-8 py-8">
       <div>
-        <ul className="flex gap-x-16 text-sm">
+        <ul className={`${styling} flex gap-x-16 text-sm`}>
           {LinksData.map((item, index) => (
             <li key={index}>
               <Link href={"/"}>{item.name}</Link>
