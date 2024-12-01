@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Blog Application By AS",
   description:
     "This is a fully functional blog application using nextjs where you can create, edit, update and delete your posts.",
+  icons: "/favicon/blog_icon.png",
 };
 
 const inter = Work_Sans({ subsets: ["latin"], display: "swap" });

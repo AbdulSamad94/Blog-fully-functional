@@ -8,7 +8,7 @@ import mongoose from 'mongoose'
 declare module 'next-auth' {
     interface Session {
         user: {
-            id?: string; // Optional field for user ID
+            id?: string;
             name?: string;
             email?: string;
             image?: string;
@@ -27,14 +27,15 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GITHUB_SECRET as string,
         }),
     ],
+    session: {
+        strategy: 'jwt',
+    },
     callbacks: {
         async signIn({ user }) {
             await mongoose.connect(userConnectionString);
 
-            // Check if user exists in MongoDB
             const existingUser = await User.findOne({ email: user.email });
             if (!existingUser) {
-                // Create a new user
                 await User.create({
                     name: user.name as string,
                     email: user.email as string,
@@ -42,20 +43,20 @@ export const authOptions: NextAuthOptions = {
                 });
             }
 
-            return true; // Allow sign-in
+            return true;
         },
         async session({ session }) {
             await mongoose.connect(userConnectionString);
 
-            // Check if session.user exists
             if (session.user?.email) {
                 const dbUser = await User.findOne({ email: session.user.email });
                 session.user.id = dbUser?._id.toString(); // Convert ObjectId to string if needed
             }
 
-            return session; // Return the modified session
+            return session;
         }
     },
+
 
     secret: process.env.NEXTAUTH_SECRET,
     debug: true,
