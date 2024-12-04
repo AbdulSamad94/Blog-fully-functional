@@ -22,12 +22,14 @@ export default function CreatePostPage() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [category, setCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: session } = useSession();
 
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     e.preventDefault();
     if (!title || !description || !image || !category) {
       alert("Please fill in all fields!");
@@ -90,12 +92,15 @@ export default function CreatePostPage() {
 
       if (response.ok && data.success) {
         alert("Post added successfully!");
+        setIsLoading(false);
         router.push("/");
       } else {
         alert(`Error: ${data.message || "Failed to save post"}`);
+        setIsLoading(false);
       }
     } catch (err) {
       console.error("Error creating post:", err);
+      setIsLoading(false);
     }
   };
 
@@ -200,9 +205,9 @@ export default function CreatePostPage() {
         <div>
           <button
             type="submit"
-            className="rounded-md transition-all bg-blue-500 text-white py-2 px-4 font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            className="rounded-md transition-all bg-blue-500 text-white py-2 px-4 font-semibold hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-2"
           >
-            Create Post
+            {isLoading ? "Loading..." : "Create Post"}
           </button>
         </div>
       </form>
