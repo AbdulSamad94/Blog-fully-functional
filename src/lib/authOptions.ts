@@ -2,8 +2,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import { NextAuthOptions } from 'next-auth'
 import { User } from './database/model/User'
-import { userConnectionString } from './database/db_connection_user'
-import mongoose from 'mongoose'
+import connectToDatabase from './database/db_connection'
 
 declare module 'next-auth' {
     interface Session {
@@ -32,7 +31,7 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async signIn({ user }) {
-            await mongoose.connect(userConnectionString);
+            await connectToDatabase();
 
             const existingUser = await User.findOne({ email: user.email });
             if (!existingUser) {
@@ -46,7 +45,7 @@ export const authOptions: NextAuthOptions = {
             return true;
         },
         async session({ session }) {
-            await mongoose.connect(userConnectionString);
+            await connectToDatabase();
 
             if (session.user?.email) {
                 const dbUser = await User.findOne({ email: session.user.email });

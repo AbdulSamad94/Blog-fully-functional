@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import Dashboard from "./Dashboard";
@@ -11,6 +10,7 @@ import {
   SheetTitle,
   SheetHeader,
 } from "./ui/sheet";
+
 const Header = () => {
   return (
     <header className="flex justify-between items-center md:mx-auto mx-3 py-4 max-w-[1200px]">
@@ -26,7 +26,6 @@ const Header = () => {
         <Navbar />
       </div>
       <div>
-        {" "}
         <div>
           <div className="flex gap-x-8 items-center">
             <div className="hidden md:flex">

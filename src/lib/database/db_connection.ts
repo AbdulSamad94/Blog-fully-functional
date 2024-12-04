@@ -1,8 +1,10 @@
+import mongoose from "mongoose"
+
 const username = process.env.myusername
 const passsword = process.env.mypassword
 
-if (!username || !passsword) {
-    throw new Error("Missing MongoDB credentials!")
-}
+const connectToDatabase = async () => {
+    return await mongoose.connect(`mongodb+srv://${username}:${passsword}@cluster0.1itt6.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0`);
+};
 
-export const connectionString = `mongodb+srv://${username}:${passsword}@cluster0.1itt6.mongodb.net/post?retryWrites=true&w=majority&appName=Cluster0`
+export default connectToDatabase

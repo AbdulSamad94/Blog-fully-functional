@@ -1,8 +1,6 @@
 "use client";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useState } from "react";
-import { AvatarImage } from "@radix-ui/react-avatar";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,22 +9,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
+import { LogOut, SquarePen } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const { data: session } = useSession();
-  const [logout, setLogout] = useState(false);
   if (session) {
     return (
       <>
+        <Link
+          href="/make-post"
+          className="flex items-center justify-center mr-8"
+        >
+          Create post <SquarePen size={20} className="ml-3" />
+        </Link>
         <div className="relative">
           <DropdownMenu>
-            <Avatar>
-              <DropdownMenuTrigger>
-                <AvatarImage src={session.user?.image as string} />
-              </DropdownMenuTrigger>
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            <DropdownMenuTrigger className="flex justify-center items-center outline-none">
+              <Image
+                src={session.user?.image as string}
+                alt="profile-img"
+                width={50}
+                height={50}
+                className="rounded-full"
+              />
+            </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />

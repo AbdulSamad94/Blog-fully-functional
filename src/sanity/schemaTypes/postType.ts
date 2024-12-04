@@ -1,5 +1,4 @@
 import { defineField } from "sanity"
-// eslint-disable-next-line
 export default {
     name: 'blog',
     title: 'Blog Post',
@@ -11,6 +10,15 @@ export default {
             type: 'string',
             validation: Rule => Rule.required().min(5).max(100),
         }),
+        {
+            name: "slug",
+            type: "slug",
+            title: "Slug",
+            options: {
+                source: "title",
+                maxLength: 96,
+            }
+        },
         defineField({
             name: 'body',
             title: 'Body',
