@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,14 +22,20 @@ interface dataType {
   createdAt: string;
 }
 
-const page = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
-    {
-      cache: "no-store",
-    }
-  );
-  const data: dataType[] = await response.json();
+const Page = () => {
+  const [data, setData] = useState<dataType[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
+        { cache: "no-store" }
+      );
+      const data: dataType[] = await response.json();
+      setData(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <section className="mt-10">
@@ -78,4 +87,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

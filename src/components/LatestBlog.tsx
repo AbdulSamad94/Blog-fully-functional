@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,13 +21,21 @@ interface dataType {
   createdAt: string;
 }
 
-const LatestBlog = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
-    { cache: "no-store" }
-  );
-  const data: dataType[] = await response.json();
+const LatestBlog = () => {
+  const [data, setData] = useState<dataType[]>([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("http://localhost:3000/api/getData");
+      const data = await response.json();
+      console.log(data);
+      setData(data);
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(data);
   return (
     <section className="my-20 lg:px-20 px-2">
       <h1 className="text-2xl font-bold text-center lg:text-start">
