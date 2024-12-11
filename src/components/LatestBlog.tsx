@@ -1,5 +1,3 @@
-"use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -21,21 +19,15 @@ interface dataType {
   createdAt: string;
 }
 
-const LatestBlog = () => {
-  const [data, setData] = useState<dataType[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("http://localhost:3000/api/getData");
-      const data = await response.json();
-      console.log(data);
-      setData(data);
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(data);
+const fetchData = async () => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return await res.json();
+};
+const LatestBlog = async () => {
+  const data: dataType[] = await fetchData();
   return (
     <section className="my-20 lg:px-20 px-2">
       <h1 className="text-2xl font-bold text-center lg:text-start">
