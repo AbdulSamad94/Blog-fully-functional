@@ -74,6 +74,7 @@ export default function CreatePostPage() {
       }
     };
 
+    //uploading data to mongodb
     try {
       const uploadedImage = await uploadImage();
       if (!uploadedImage) throw new Error("Image upload failed");
@@ -101,6 +102,7 @@ export default function CreatePostPage() {
         alert("Post added successfully!");
         setIsLoading(false);
         router.push("/");
+        router.refresh();
       } else {
         alert(`Error: ${data.message || "Failed to save post"}`);
         setIsLoading(false);
