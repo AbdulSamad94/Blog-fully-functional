@@ -33,7 +33,7 @@ async function fetchBlogs(): Promise<dataType[]> {
 }
 
 const LatestBlog = async () => {
-  const data = await fetchBlogs();
+  const data: dataType[] = await fetchBlogs();
 
   return (
     <section className="my-20 lg:px-20 px-2">

@@ -33,7 +33,7 @@ async function fetchBlogs(): Promise<dataType[]> {
 }
 
 const page = async () => {
-  const data = await fetchBlogs();
+  const data: dataType[] = await fetchBlogs();
 
   return (
     <section className="mt-10">
