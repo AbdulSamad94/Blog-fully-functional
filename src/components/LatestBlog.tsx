@@ -19,20 +19,12 @@ interface dataType {
   createdAt: string;
 }
 
-async function fetchBlogs() {
+const LatestBlog = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     { cache: "no-store" }
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch blogs");
-  }
-  return response.json();
-}
-
-const LatestBlog = async () => {
-  const data: dataType[] = await fetchBlogs();
+  const data: dataType[] = await response.json();
 
   return (
     <section className="my-20 lg:px-20 px-2">
