@@ -221,7 +221,7 @@ export default function CreatePostPage() {
             type="submit"
             className="rounded-md transition-all bg-blue-500 text-white py-2 px-4 font-semibold hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-2"
           >
-            q{isLoading ? "Loading..." : "Create Post"}
+            {isLoading ? "Loading..." : "Create Post"}
           </button>
         </div>
       </form>

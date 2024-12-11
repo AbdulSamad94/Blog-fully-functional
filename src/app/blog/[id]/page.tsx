@@ -22,7 +22,6 @@ export const generateStaticParams = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     {
-      next: { revalidate: 60 },
       cache: "no-store",
     }
   );
@@ -44,7 +43,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     {
-      next: { revalidate: 60 },
+      cache: "no-store",
     }
   );
 
