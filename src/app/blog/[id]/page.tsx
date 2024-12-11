@@ -23,6 +23,7 @@ export const generateStaticParams = async () => {
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     {
       next: { revalidate: 60 },
+      cache: "no-store",
     }
   );
 
