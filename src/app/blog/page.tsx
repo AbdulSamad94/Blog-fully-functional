@@ -24,6 +24,7 @@ async function fetchBlogs(): Promise<dataType[]> {
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     {
       next: { revalidate: 60 },
+      cache: "no-store",
     }
   );
   if (!response.ok) {
