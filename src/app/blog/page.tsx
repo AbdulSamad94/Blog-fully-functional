@@ -19,29 +19,29 @@ interface dataType {
   createdAt: string;
 }
 
-//fetching blog data from the route
 async function fetchBlogs(): Promise<dataType[]> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
-    { next: { revalidate: 60 } }
+    {
+      next: { revalidate: 60 },
+    }
   );
-
   if (!response.ok) {
     throw new Error("Failed to fetch blogs");
   }
   return response.json();
 }
 
-const LatestBlog = async () => {
+const page = async () => {
   const data = await fetchBlogs();
 
   return (
-    <section className="my-20 lg:px-20 px-2">
-      <h1 className="text-2xl font-bold text-center lg:text-start">
-        Latest Post
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 md:gap-4 gap-6 mt-14">
-        {data.slice(0, 9).map((item) => (
+    <section className="mt-10">
+      <div>
+        <h1 className="text-4xl font-bold text-center">All Blog posts</h1>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 md:gap-10 gap-6 mt-20 place-self-center">
+        {data.map((item) => (
           <Link
             href={`/blog/${item._id}`}
             key={item._id}
@@ -81,16 +81,8 @@ const LatestBlog = async () => {
           </Link>
         ))}
       </div>
-      <div className="flex justify-center items-center mt-8 w-full">
-        <Link
-          href="/blog"
-          className=" ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-4 py-3 rounded-md dark:text-gray-300"
-        >
-          View All Posts
-        </Link>
-      </div>
     </section>
   );
 };
 
-export default LatestBlog;
+export default page;

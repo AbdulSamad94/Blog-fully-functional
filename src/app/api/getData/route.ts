@@ -6,7 +6,10 @@ export const GET = async () => {
     await connectToDatabase()
 
     try {
-        const blogs = await Blog.find().sort({ createdAt: -1 })
+        const blogs = await Blog.find().populate({
+            path: "userId",
+            select: "name email image",
+        }).sort({ createdAt: -1 })
         return NextResponse.json(blogs, { status: 200 })
     }
     catch (err) {

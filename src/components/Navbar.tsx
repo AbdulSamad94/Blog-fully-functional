@@ -3,18 +3,19 @@ import Link from "next/link";
 const LinksData = [
   {
     name: "Home",
+    link: "/",
   },
   {
     name: "Blog",
-  },
-  {
-    name: "Single Post",
+    link: "/blog",
   },
   {
     name: "Pages",
+    link: "/pages",
   },
   {
     name: "Contact",
+    link: "/contact",
   },
 ];
 
@@ -28,7 +29,7 @@ const Navbar = ({ styling }: StylingComponents) => {
         <ul className={`${styling} flex gap-x-16 text-sm`}>
           {LinksData.map((item, index) => (
             <li key={index}>
-              <Link href={"/"}>{item.name}</Link>
+              <Link href={item.link}>{item.name}</Link>
             </li>
           ))}
         </ul>
