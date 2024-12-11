@@ -19,8 +19,7 @@ interface dataType {
   createdAt: string;
 }
 
-//fetching blog data from the route
-async function fetchBlogs(): Promise<dataType[]> {
+async function fetchBlogs() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     { cache: "no-store" }

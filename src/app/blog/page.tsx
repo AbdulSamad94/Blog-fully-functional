@@ -19,7 +19,7 @@ interface dataType {
   createdAt: string;
 }
 
-async function fetchBlogs(): Promise<dataType[]> {
+async function fetchBlogs() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
     {
