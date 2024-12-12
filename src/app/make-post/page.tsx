@@ -102,7 +102,6 @@ export default function CreatePostPage() {
         alert("Post added successfully!");
         setIsLoading(false);
         router.push("/");
-        router.refresh();
       } else {
         alert(`Error: ${data.message || "Failed to save post"}`);
         setIsLoading(false);
