@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -24,19 +24,37 @@ interface dataType {
 
 const Page = () => {
   const [data, setData] = useState<dataType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/getData`,
-        { cache: "no-store" }
-      );
-      const data: dataType[] = await response.json();
-      setData(data);
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:3000/api/getData", {
+          cache: "no-store",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const fetchedData = await response.json();
+        setData(fetchedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+
     fetchData();
   }, []);
 
+  if (isLoading) {
+    return <p>Loading blog posts...</p>;
+  }
+
+  if (!data || !data.length) {
+    return <p>No blog posts found.</p>;
+  }
   return (
     <section className="mt-10">
       <div>
