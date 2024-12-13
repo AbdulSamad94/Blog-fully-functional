@@ -26,9 +26,6 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GITHUB_SECRET as string,
         }),
     ],
-    session: {
-        strategy: 'jwt',
-    },
     callbacks: {
         async signIn({ user }) {
             await connectToDatabase();

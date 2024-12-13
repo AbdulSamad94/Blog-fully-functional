@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 interface DataType {
   image: {
@@ -19,20 +22,19 @@ interface DataType {
   createdAt: string;
 }
 
-async function FetchBlogs() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_URL_LOCAL_PRODUCTION}/api/getData`,
-    { cache: "no-cache" }
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch blogs");
-  }
-  return response.json();
-}
+const LatestBlog = () => {
+  const [data, setData] = useState<DataType[]>([]);
 
-const LatestBlog = async () => {
-  const data: DataType[] = await FetchBlogs();
-  console.log(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+        cache: "no-store",
+      });
+      const result = await res.json();
+      setData(result);
+    };
+    fetchData();
+  }, []);
   return (
     <section className="my-20 lg:px-20 px-2">
       <h1 className="text-2xl font-bold text-center lg:text-start">
