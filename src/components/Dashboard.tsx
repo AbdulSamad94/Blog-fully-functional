@@ -9,23 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, SquarePen } from "lucide-react";
-import Link from "next/link";
-
+import { LogOut } from "lucide-react";
 export default function Dashboard() {
   const { data: session } = useSession();
   if (session) {
     return (
       <>
-        <Link
-          href="/make-post"
-          className="flex items-center justify-center mr-8"
-        >
-          Create post <SquarePen size={20} className="ml-3" />
-        </Link>
         <div className="relative">
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex justify-center items-center outline-none">
+            <DropdownMenuTrigger className="flex justify-center items-center outline-none mx-auto mt-4 md:mt-0">
               <Image
                 src={session.user?.image as string}
                 alt="profile-img"

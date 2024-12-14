@@ -4,7 +4,7 @@ import Link from "next/link";
 import Navbar from "./Navbar";
 import Dashboard from "./Dashboard";
 import ThemeTogller from "./themeToggler";
-import { Menu } from "lucide-react";
+import { Menu, SquarePen } from "lucide-react";
 import {
   Sheet,
   SheetTrigger,
@@ -13,9 +13,11 @@ import {
   SheetHeader,
 } from "./ui/sheet";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
 
   const closeSheet = () => setIsOpen(false);
   return (
@@ -34,7 +36,15 @@ const Header = () => {
       <div>
         <div>
           <div className="flex gap-x-8 items-center">
-            <div className="hidden md:flex">
+            <div className="hidden md:flex items-center gap-x-4">
+              {session?.user && (
+                <Link
+                  href="/make-post"
+                  className="flex items-center justify-center"
+                >
+                  Create post <SquarePen size={20} className="ml-3" />
+                </Link>
+              )}
               <Dashboard />
             </div>
             <ThemeTogller />
@@ -49,6 +59,14 @@ const Header = () => {
                       <Dashboard />
                     </SheetHeader>
                   </SheetTitle>
+                  {session?.user && (
+                    <Link
+                      href="/make-post"
+                      className="flex items-center justify-center mt-3"
+                    >
+                      Create post <SquarePen size={20} className="ml-3" />
+                    </Link>
+                  )}
                   <Navbar
                     styling="flex-col gap-y-14 mt-10 text-base"
                     closeSheet={closeSheet}

@@ -8,7 +8,7 @@ const LinksData = [
     link: "/",
   },
   {
-    name: "Blog",
+    name: "Blogs",
     link: "/blog",
   },
   {

@@ -129,6 +129,14 @@ export default function CreatePostPage() {
     }
   };
 
+  if (!session?.user) {
+    return (
+      <div className="flex justify-center items-center mt-20 text-4xl text-red-600 font-semibold">
+        Sign In to make post!
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="w-full p-6 space-y-6">
