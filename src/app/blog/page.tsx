@@ -45,7 +45,7 @@ const Page = () => {
           <Link
             href={`/blog/${item._id}`}
             key={item._id}
-            className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg cursor-pointer w-[369px]"
+            className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg cursor-pointer md:w-[369px] w-[330px]"
           >
             <div>
               <Image
@@ -67,10 +67,10 @@ const Page = () => {
                 height={26}
                 className="rounded-full"
               />
-              <p className="text-accent-foreground text-sm font-medium">
+              <p className="text-accent-foreground md:text-sm text-xs font-medium">
                 {item.userId.name}
               </p>
-              <p className="text-accent-foreground text-sm ">
+              <p className="text-accent-foreground md:text-sm text-xs ">
                 {new Intl.DateTimeFormat("en-US", {
                   day: "2-digit",
                   month: "long",

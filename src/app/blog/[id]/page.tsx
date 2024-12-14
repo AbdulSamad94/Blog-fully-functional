@@ -62,8 +62,19 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <section className="p-6 mt-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between">
-          <Button className="text-xs mb-4">{blogData.category}</Button>
+        <div className="flex justify-between items-center mb-7">
+          <Button className="text-xs">{blogData.category}</Button>
+          {isAuthor && (
+            <div className="flex md:hidden items-center gap-x-6">
+              <Link href={`/updatePost/${blogData._id}`}>
+                <Pencil
+                  size={20}
+                  className="text-green-500 transition-colors hover:text-green-800"
+                />
+              </Link>
+              <Delete id={blogData._id} />
+            </div>
+          )}
         </div>
         <h1 className="text-3xl font-semibold mb-4">{blogData.title}</h1>
         <div className="flex justify-between items-center my-8 ">
@@ -75,15 +86,15 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               height={36}
               className="rounded-full"
             />
-            <p className="text-accent-foreground text-sm font-medium">
+            <p className="text-accent-foreground md:text-sm text-xs font-medium">
               {blogData.userId.name}
             </p>
-            <p className="text-accent-foreground text-sm ">
+            <p className="text-accent-foreground md:text-sm text-xs ">
               {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
             </p>
           </div>
           {isAuthor && (
-            <div className="flex items-center gap-x-6">
+            <div className="md:flex hidden items-center gap-x-6">
               <Link href={`/updatePost/${blogData._id}`}>
                 <Pencil
                   size={20}

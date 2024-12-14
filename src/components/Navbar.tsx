@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 const LinksData = [
@@ -19,20 +21,21 @@ const LinksData = [
   },
 ];
 
-interface StylingComponents {
+const Navbar = ({
+  styling,
+  closeSheet,
+}: {
   styling?: string;
-}
-const Navbar = ({ styling }: StylingComponents) => {
+  closeSheet?: () => void;
+}) => {
   return (
     <nav className="px-8 py-8">
-      <div>
-        <ul className={`${styling} flex gap-x-16 text-sm`}>
-          {LinksData.map((item, index) => (
-            <li key={index}>
-              <Link href={item.link}>{item.name}</Link>
-            </li>
-          ))}
-        </ul>
+      <div className={`${styling} flex gap-x-16 text-sm`}>
+        {LinksData.map((item, index) => (
+          <Link key={index} onClick={closeSheet} href={item.link}>
+            {item.name}
+          </Link>
+        ))}
       </div>
     </nav>
   );

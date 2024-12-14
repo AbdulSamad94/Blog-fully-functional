@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "./Navbar";
 import Dashboard from "./Dashboard";
@@ -10,8 +12,12 @@ import {
   SheetTitle,
   SheetHeader,
 } from "./ui/sheet";
+import { useState } from "react";
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeSheet = () => setIsOpen(false);
   return (
     <header className="flex justify-between items-center md:mx-auto mx-3 py-4 max-w-[1200px]">
       <div className="flex justify-between items-center">
@@ -33,7 +39,7 @@ const Header = () => {
             </div>
             <ThemeTogller />
             <div className="md:hidden flex items-center">
-              <Sheet>
+              <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger>
                   <Menu className="cursor-pointer" />
                 </SheetTrigger>
@@ -43,7 +49,10 @@ const Header = () => {
                       <Dashboard />
                     </SheetHeader>
                   </SheetTitle>
-                  <Navbar styling="flex-col gap-y-14 mt-10 text-base" />
+                  <Navbar
+                    styling="flex-col gap-y-14 mt-10 text-base"
+                    closeSheet={closeSheet}
+                  />
                 </SheetContent>
               </Sheet>
             </div>
