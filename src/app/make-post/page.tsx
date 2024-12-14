@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast, ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const categories = [
   "Technology",
@@ -38,7 +41,7 @@ export default function CreatePostPage() {
     e.preventDefault();
 
     if (!title || !description || !image || !category) {
-      alert("Please fill in all fields!");
+      toast.error("Please fill in all fields!");
       return;
     }
 
@@ -66,11 +69,11 @@ export default function CreatePostPage() {
           };
         } else {
           console.error("Cloudinary upload error:", data);
-          throw new Error(data.error?.message || "Failed to upload image");
+          toast.error(data.error?.message || "Failed to upload image");
         }
       } catch (err) {
         console.error("Image upload failed:", err);
-        throw new Error("Failed to upload image");
+        toast.error("Failed to upload image");
       }
     };
 
@@ -99,11 +102,13 @@ export default function CreatePostPage() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        alert("Post added successfully!");
+        toast.success("Post added successfully!");
         setIsLoading(false);
-        router.push("/");
+        setTimeout(() => {
+          router.push("/");
+        }, 2000);
       } else {
-        alert(`Error: ${data.message || "Failed to save post"}`);
+        toast.error(`Error: ${data.message || "Failed to save post"}`);
         setIsLoading(false);
       }
     } catch (err) {
@@ -113,7 +118,6 @@ export default function CreatePostPage() {
   };
 
   //to show the image below the upload image button
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     if (file) {
@@ -138,12 +142,26 @@ export default function CreatePostPage() {
             id="title"
             type="text"
             value={title}
+            minLength={20}
             maxLength={50}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(e.target.value)
+            }
             placeholder="Enter your blog title"
-            className="mt-2 w-full rounded-md border border-gray-300 dark:border-opacity-20 focus:outline-blue-500 focus:outline focus:border-none shadow-sm h-14 py-4 px-8"
+            className={`mt-2 w-full rounded-md border ${
+              title.length >= 30 ? "border-green-500" : "border-red-500"
+            } focus:outline-none shadow-sm py-4 px-8`}
             required
           />
+          <p
+            className={`mt-2 text-sm ${
+              title.length >= 30 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {title.length >= 30
+              ? "Title is valid!"
+              : "Title must be at least 30 characters."}
+          </p>
         </div>
 
         {/* Description */}
@@ -152,12 +170,26 @@ export default function CreatePostPage() {
           <textarea
             id="description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setDescription(e.target.value)
+            }
             placeholder="Write a brief description of your blog"
+            minLength={150}
             rows={4}
-            className="mt-2 w-full  rounded-md border border-gray-300 dark:border-opacity-20 focus:outline-blue-500 focus:outline focus:border-none h-52 shadow-sm py-4 px-8"
+            className={`mt-2 w-full rounded-md border ${
+              description.length >= 150 ? "border-green-500" : "border-red-500"
+            } focus:outline-none shadow-sm py-4 px-8`}
             required
           />
+          <p
+            className={`mt-2 text-sm ${
+              description.length >= 150 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {description.length >= 150
+              ? "Description is valid!"
+              : "Description must be at least 100 characters."}
+          </p>
         </div>
 
         {/* Image */}
@@ -224,6 +256,7 @@ export default function CreatePostPage() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }
