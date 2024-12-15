@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
-import { motion } from "motion/react"; // Import framer-motion
+import { motion } from "framer-motion"; // Import framer-motion
 
 interface DataType {
   image: {
