@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Navbar from "./Navbar";
-import Dashboard from "./Dashboard";
-import ThemeTogller from "./themeToggler";
+import Dashboard from "../Authorization/Dashboard";
+import ThemeTogller from "../Theme/themeToggler";
 import { Menu, SquarePen } from "lucide-react";
 import {
   Sheet,
@@ -11,11 +11,11 @@ import {
   SheetContent,
   SheetTitle,
   SheetHeader,
-} from "./ui/sheet";
+} from "../ui/sheet";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

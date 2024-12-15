@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 import { motion } from "framer-motion"; // Import framer-motion
 
 interface DataType {
@@ -35,7 +35,7 @@ const LatestBlog = () => {
       });
       const result = await res.json();
       setData(result);
-      setIsLoading(false); // Set loading state to false once data is fetched
+      setIsLoading(false);
     };
     fetchData();
   }, []);

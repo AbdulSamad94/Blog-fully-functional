@@ -8,10 +8,10 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 
 import { useSession } from "next-auth/react";
-import { delay, easeInOut, motion } from "motion/react";
+import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
-import Delete from "@/components/Delete";
+import Delete from "@/components/ui/Delete";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useState, useEffect } from "react";

@@ -1,5 +1,5 @@
-import HeroSection from "@/components/hero";
-import LatestBlog from "@/components/LatestBlog";
+import HeroSection from "@/components/Hero/hero";
+import LatestBlog from "@/components/Hero/LatestBlog";
 
 export default async function Home() {
   return (

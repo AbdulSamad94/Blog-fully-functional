@@ -1,9 +1,9 @@
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/Theme/theme-provider";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
-import SessionWrapper from "@/components/SessionWrapper";
-import Header from "@/components/Header";
+import SessionWrapper from "@/components/Authorization/SessionWrapper";
+import Header from "@/components/Header/Header";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
