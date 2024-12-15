@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { motion } from "framer-motion"; // Import framer-motion
 
@@ -27,18 +27,46 @@ interface DataType {
 const LatestBlog = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
-        cache: "no-store",
-      });
-      const result = await res.json();
-      setData(result);
-      setIsLoading(false);
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const result = await res.json();
+        setData(result);
+      } catch (err) {
+        setError("An error occurred while fetching data.");
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, []);
+
+  const renderSkeletons = useMemo(
+    () =>
+      Array(9)
+        .fill(0)
+        .map((_, index) => (
+          <div key={index}>
+            <Skeleton className="w-full h-[167px]" /> {/* Image Skeleton */}
+            <Skeleton className="mt-5 h-6 w-3/4" /> {/* Title Skeleton */}
+            <div className="my-5 flex items-center gap-x-4">
+              <Skeleton className="w-6 h-6 rounded-full" />{" "}
+              {/* Author Image Skeleton */}
+              <Skeleton className="w-24 h-4" /> {/* Author Name Skeleton */}
+              <Skeleton className="w-24 h-4" /> {/* Date Skeleton */}
+            </div>
+          </div>
+        )),
+    []
+  );
 
   return (
     <section className="my-20 lg:px-20 px-2">
@@ -46,71 +74,59 @@ const LatestBlog = () => {
         Latest Post
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 md:gap-4 gap-6 mt-14">
-        {isLoading
-          ? Array(9)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index}>
-                  <Skeleton className="w-full h-[167px]" />{" "}
-                  {/* Image Skeleton */}
-                  <Skeleton className="mt-5 h-6 w-3/4" /> {/* Title Skeleton */}
-                  <div className="my-5 flex items-center gap-x-4">
-                    <Skeleton className="w-6 h-6 rounded-full" />{" "}
-                    {/* Author Image Skeleton */}
-                    <Skeleton className="w-24 h-4" />{" "}
-                    {/* Author Name Skeleton */}
-                    <Skeleton className="w-24 h-4" /> {/* Date Skeleton */}
-                  </div>
+        {isLoading ? (
+          renderSkeletons
+        ) : error ? (
+          <div className="col-span-full text-center text-red-500">{error}</div>
+        ) : (
+          data.slice(0, 9).map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg"
+            >
+              <Link href={`/blog/${item._id}`}>
+                <div>
+                  <Image
+                    src={item.image.url}
+                    alt={item.title}
+                    width={280}
+                    height={200}
+                    className="w-full h-[167px]"
+                  />
                 </div>
-              ))
-          : // Display actual data once loaded
-            data.slice(0, 9).map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }} // Adjust duration as needed
-                className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg"
-              >
-                <Link href={`/blog/${item._id}`}>
-                  <div>
-                    <Image
-                      src={item.image.url}
-                      alt="blog-img"
-                      width={280}
-                      height={200}
-                      className="w-full h-[167px]"
-                    />
-                  </div>
-                  <div className="flex justify-between flex-col">
-                    <h1 className="mt-5 font-bold md:text-3xl text-2xl md:h-28">
-                      {item.title}
-                    </h1>
-                    <div className="flex items-end">
-                      <div className="my-5 flex items-center gap-x-4">
-                        <Image
-                          src={item.userId.image}
-                          alt="author-pic"
-                          width={32}
-                          height={32}
-                          className="rounded-full"
-                        />
-                        <p className="text-accent-foreground md:text-sm text-xs font-medium">
-                          {item.userId.name}
-                        </p>
-                        <p className="text-accent-foreground md:text-sm text-xs">
-                          {new Intl.DateTimeFormat("en-US", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          }).format(new Date(item.createdAt))}
-                        </p>
-                      </div>
+                <div className="flex justify-between flex-col">
+                  <h1 className="mt-5 font-bold md:text-3xl text-2xl md:h-28">
+                    {item.title}
+                  </h1>
+                  <div className="flex items-end">
+                    <div className="my-5 flex items-center gap-x-4">
+                      <Image
+                        src={item.userId.image}
+                        alt="author-pic"
+                        width={32}
+                        height={32}
+                        className="rounded-full"
+                      />
+                      <p className="text-accent-foreground md:text-sm text-xs font-medium">
+                        {item.userId.name}
+                      </p>
+                      <p className="text-accent-foreground md:text-sm text-xs">
+                        {new Intl.DateTimeFormat("en-US", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        }).format(new Date(item.createdAt))}
+                      </p>
                     </div>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
+                </div>
+              </Link>
+            </motion.div>
+          ))
+        )}
       </div>
       <div className="flex justify-center items-center mt-8 w-full">
         <Link
