@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "motion/react";
 
 const LinksData = [
   {
@@ -32,9 +33,23 @@ const Navbar = ({
     <nav className="px-8 py-8">
       <div className={`${styling} flex gap-x-16 text-sm`}>
         {LinksData.map((item, index) => (
-          <Link key={index} onClick={closeSheet} href={item.link}>
-            {item.name}
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.1,
+            }}
+            key={index}
+          >
+            <Link
+              className="hover:underline transition-all"
+              onClick={closeSheet}
+              href={item.link}
+            >
+              {item.name}
+            </Link>
+          </motion.div>
         ))}
       </div>
     </nav>

@@ -14,40 +14,77 @@ import {
 } from "./ui/sheet";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { motion } from "motion/react";
+import { Skeleton } from "./ui/skeleton";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const closeSheet = () => setIsOpen(false);
   return (
     <header className="flex justify-between items-center md:mx-auto mx-3 py-4 max-w-[1200px]">
-      <div className="flex justify-between items-center">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.5,
+        }}
+        className="flex justify-between items-center"
+      >
         <Link href="/" className="flex items-center gap-x-2 cursor-pointer">
           <div className="dark:bg-dark-logo bg-light-logo h-10 w-10 bg-center bg-no-repeat"></div>
           <p className="text-2xl poppins">
             Meta<span className="font-bold">Blog</span>
           </p>
         </Link>
-      </div>
+      </motion.div>
       <div className="hidden md:flex">
         <Navbar />
       </div>
       <div>
         <div>
           <div className="flex gap-x-8 items-center">
-            <div className="hidden md:flex items-center gap-x-4">
-              {session?.user && (
-                <Link
-                  href="/make-post"
-                  className="flex items-center justify-center"
-                >
-                  Create post <SquarePen size={20} className="ml-3" />
-                </Link>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.8,
+              }}
+              className="hidden md:flex items-center gap-x-4"
+            >
+              {status === "loading" ? (
+                // Skeleton loader
+                <Skeleton className="w-32 h-6 rounded" />
+              ) : (
+                session?.user && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      duration: 0.8,
+                    }}
+                  >
+                    <Link
+                      href="/make-post"
+                      className="flex items-center justify-center"
+                    >
+                      Create post <SquarePen size={20} className="ml-3" />
+                    </Link>
+                  </motion.div>
+                )
               )}
               <Dashboard />
-            </div>
-            <ThemeTogller />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.5,
+              }}
+            >
+              <ThemeTogller />
+            </motion.div>
             <div className="md:hidden flex items-center">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger>

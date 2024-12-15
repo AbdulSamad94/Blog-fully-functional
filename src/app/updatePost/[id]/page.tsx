@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
+import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "motion/react";
 import "react-toastify/dist/ReactToastify.css";
 
 const categories = [
@@ -29,6 +31,7 @@ export default function CreatePostPage({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [skeleton, setSkeleton] = useState(true);
 
   const [id, setId] = useState<string | null>(null);
   const { data: session } = useSession();
@@ -61,9 +64,6 @@ export default function CreatePostPage({
 
           if (post.userId !== session?.user.id) {
             toast.error("Unauthorized access.");
-            setTimeout(() => {
-              router.push("/");
-            }, 2000);
             return;
           }
 
@@ -73,12 +73,11 @@ export default function CreatePostPage({
           setCategory(post.category);
         } else {
           toast.error("Failed to fetch post data.");
-          setTimeout(() => {
-            router.push("/");
-          }, 2000);
         }
       } catch (err) {
         console.error("Error fetching post data:", err);
+      } finally {
+        setSkeleton(false);
       }
     };
 
@@ -169,17 +168,43 @@ export default function CreatePostPage({
     }
   };
 
-  if (!id || !session) {
-    return <div>Loading...</div>;
+  if (skeleton) {
+    return (
+      <div className="flex items-center justify-center px-4">
+        <div className="w-full p-6 space-y-6">
+          <div className=" flex justify-center">
+            <Skeleton className="w-60 h-10" />
+          </div>
+          <Skeleton className="w-full h-12" />
+          <div className="mt-10">
+            <Skeleton className="w-full h-32" />
+          </div>
+          <Skeleton className="w-60 h-8" />
+          <Skeleton className="w-full h-12" />
+          <Skeleton className="w-60 h-8" />
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
       <div className="flex items-center justify-center px-4">
         <form onSubmit={handleSubmit} className="w-full p-6 space-y-6">
-          <h1 className="text-3xl font-semibold text-center">Edit Blog Post</h1>
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl font-semibold text-center"
+          >
+            Edit Blog Post
+          </motion.h1>
           {/* Title */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-lg font-medium">Title</p>
             <input
               type="text"
@@ -204,10 +229,14 @@ export default function CreatePostPage({
                 ? "Title is valid!"
                 : "Title must be at least 30 characters."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Description */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-lg font-medium">Description</p>
             <textarea
               value={description}
@@ -233,10 +262,14 @@ export default function CreatePostPage({
                 ? "Description is valid!"
                 : "Description must be at least 100 characters."}
             </p>
-          </div>
+          </motion.div>
 
           {/* Image */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-lg font-medium">Image</p>
             <label
               htmlFor="image"
@@ -260,10 +293,14 @@ export default function CreatePostPage({
                 className="mt-4 rounded-md shadow"
               />
             )}
-          </div>
+          </motion.div>
 
           {/* Category */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-lg font-medium">Category</p>
             <select
               value={category}
@@ -280,15 +317,18 @@ export default function CreatePostPage({
                 </option>
               ))}
             </select>
-          </div>
+          </motion.div>
 
           {/* Submit Button */}
-          <button
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
             type="submit"
             className="rounded-md transition-all bg-blue-500 text-white py-2 px-4 font-semibold hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-2"
           >
             {isLoading ? "Updating..." : "Update Post"}
-          </button>
+          </motion.button>
         </form>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />

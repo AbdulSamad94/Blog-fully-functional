@@ -10,12 +10,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
+import { motion } from "motion/react";
+
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <Skeleton className="w-12 h-12 rounded-full" />;
+  }
   if (session) {
     return (
       <>
-        <div className="relative">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 0.8,
+          }}
+          className="relative"
+        >
           <DropdownMenu>
             <DropdownMenuTrigger className="flex justify-center items-center outline-none mx-auto mt-4 md:mt-0">
               <Image
@@ -34,7 +48,7 @@ export default function Dashboard() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </motion.div>
       </>
     );
   }

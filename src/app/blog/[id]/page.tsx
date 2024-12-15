@@ -1,13 +1,20 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import { format } from "date-fns";
+
 import Image from "next/image";
-import { Pencil } from "lucide-react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import Link from "next/link";
+
+import { Pencil } from "lucide-react";
+
+import { useSession } from "next-auth/react";
+import { delay, easeInOut, motion } from "motion/react";
+
+import { Button } from "@/components/ui/button";
 import Delete from "@/components/Delete";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import { useState, useEffect } from "react";
 
 interface DataType {
   image: {
@@ -27,27 +34,74 @@ interface DataType {
   createdAt: string;
 }
 
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
+const SkeletonLoader = () => (
+  <section className="p-6 mt-8">
+    <div className="max-w-4xl mx-auto">
+      <Skeleton className="h-6 w-24 mb-7" />
+      <Skeleton className="h-8 w-3/4 mb-4" />
+      <div className="flex justify-between items-center my-8">
+        <div className="flex items-center gap-x-4">
+          <Skeleton className="h-9 w-9 rounded-full" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </div>
+      <Skeleton className="w-full h-96 rounded-xl mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-11/12 mb-2" />
+      <Skeleton className="h-4 w-10/12" />
+    </div>
+  </section>
+);
 
-  const session = await getServerSession(authOptions);
+const Page = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { data: session, status } = useSession();
+  const [blogData, setBlogData] = useState<DataType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [id, setId] = useState<string | null>(null);
 
-  if (!session) {
+  useEffect(() => {
+    async function resolveParams() {
+      const resolved = await params;
+      setId(resolved.id);
+    }
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id && status === "authenticated") {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_URL}/api/getData`
+          );
+          if (!response.ok) throw new Error("Failed to fetch data from API");
+
+          const allData: DataType[] = await response.json();
+          const blogData = allData.find((item) => item._id === id);
+          setBlogData(blogData || null);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+  }, [id, status]);
+
+  if (status === "loading" || isLoading) {
+    return <SkeletonLoader />;
+  }
+
+  if (status !== "authenticated") {
     return (
       <section>
         <h1>You must be logged in to view this page.</h1>
       </section>
     );
   }
-
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`);
-
-  if (!response.ok) {
-    toast.error("Failed to fetch blog data");
-  }
-
-  const data: DataType[] = await response.json();
-  const blogData = data.find((item) => item._id === id);
 
   if (!blogData) {
     return (
@@ -57,13 +111,18 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     );
   }
 
-  const isAuthor = blogData.userId._id === session.user?.id;
+  const isAuthor = blogData.userId._id === session?.user?.id;
 
   return (
     <section className="p-6 mt-8">
-      <div className="max-w-4xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-4xl mx-auto"
+      >
         <div className="flex justify-between items-center mb-7">
-          <Button className="text-xs">{blogData.category}</Button>
+          <Button className="text-xs h-8 px-3">{blogData.category}</Button>
           {isAuthor && (
             <div className="flex md:hidden items-center gap-x-6">
               <Link href={`/updatePost/${blogData._id}`}>
@@ -77,7 +136,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           )}
         </div>
         <h1 className="text-3xl font-semibold mb-4">{blogData.title}</h1>
-        <div className="flex justify-between items-center my-8 ">
+        <div className="flex justify-between items-center my-8">
           <div className="flex items-center gap-x-4">
             <Image
               src={blogData.userId.image}
@@ -89,7 +148,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
             <p className="text-accent-foreground md:text-sm text-xs font-medium">
               {blogData.userId.name}
             </p>
-            <p className="text-accent-foreground md:text-sm text-xs ">
+            <p className="text-accent-foreground md:text-sm text-xs">
               {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
             </p>
           </div>
@@ -115,8 +174,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
         <p className="dark:text-gray-300 whitespace-pre-wrap mt-10">
           {blogData.description}
         </p>
-      </div>
-      <ToastContainer />
+      </motion.div>
     </section>
   );
 };

@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
+import { easeInOut, motion } from "motion/react";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,7 +31,7 @@ export default function CreatePostPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // use session to get user data
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   //router to tp to other page
   const router = useRouter();
@@ -129,7 +130,7 @@ export default function CreatePostPage() {
     }
   };
 
-  if (!session?.user) {
+  if (status === "unauthenticated") {
     return (
       <div className="flex justify-center items-center mt-20 text-4xl text-red-600 font-semibold">
         Sign In to make post!
@@ -140,11 +141,21 @@ export default function CreatePostPage() {
   return (
     <div className="flex items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="w-full p-6 space-y-6">
-        <h1 className="text-3xl font-semibold text-center">
-          Create New Blog Post
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-3xl font-semibold text-center">
+            Create New Blog Post
+          </h1>
+        </motion.div>
         {/* Title */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: easeInOut }}
+        >
           <p className="block text-lg font-medium">Title</p>
           <input
             id="title"
@@ -170,10 +181,14 @@ export default function CreatePostPage() {
               ? "Title is valid!"
               : "Title must be at least 30 characters."}
           </p>
-        </div>
+        </motion.div>
 
         {/* Description */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: easeInOut }}
+        >
           <p className="block text-lg font-medium">Description</p>
           <textarea
             id="description"
@@ -198,10 +213,14 @@ export default function CreatePostPage() {
               ? "Description is valid!"
               : "Description must be at least 100 characters."}
           </p>
-        </div>
+        </motion.div>
 
         {/* Image */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: easeInOut }}
+        >
           <p className="block text-lg font-medium">Blog Image</p>
           <label
             htmlFor="image"
@@ -231,10 +250,14 @@ export default function CreatePostPage() {
               />
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Blog Category */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: easeInOut }}
+        >
           <p className="block text-lg font-medium">Blog Category</p>
           <select
             id="category"
@@ -252,17 +275,21 @@ export default function CreatePostPage() {
               </option>
             ))}
           </select>
-        </div>
+        </motion.div>
 
         {/* Submit Button */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: easeInOut }}
+        >
           <button
             type="submit"
             className="rounded-md transition-all bg-blue-500 text-white py-2 px-4 font-semibold hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-2"
           >
             {isLoading ? "Loading..." : "Create Post"}
           </button>
-        </div>
+        </motion.div>
       </form>
       <ToastContainer />
     </div>
