@@ -45,23 +45,6 @@ NEXTAUTH_SECRET=your-secret-key
 npm run dev
 Access the app at http://localhost:3000.
 ```
-
-## Folder Structure
-
-```bash
-app/
-  ├── error.tsx          # Global error page
-  ├── layout.tsx         # Root layout
-  ├── page.tsx           # Homepage
-  ├── make-post/         # Create post page
-  ├── updatePost/        # Edit post page
-  ├── blog/[id]          # Single post page
-components/
-  ├── Header.tsx         # Main header component
-lib/
-  ├── db.ts              # MongoDB connection
-  ├── auth.ts            # NextAuth.js config
-```
 License
 All rights reserverd
 
