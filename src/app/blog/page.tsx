@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "motion/react";
 
 interface DataType {
@@ -45,6 +46,7 @@ const Page = () => {
       <div>
         <h1 className="text-4xl font-bold text-center">All Blog posts</h1>
       </div>
+      <div></div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 mt-20 place-self-center">
         {isLoading
           ? Array(9)

@@ -124,9 +124,7 @@ const LatestBlog = () => {
             </motion.div>
           ))
         ) : (
-          <div className="col-span-full text-center text-gray-500">
-            No posts available.
-          </div>
+          renderSkeletons
         )}
       </div>
       <div className="flex justify-center items-center mt-8 w-full">
