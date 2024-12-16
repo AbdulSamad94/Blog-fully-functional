@@ -4,21 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { motion } from "framer-motion"; // Import framer-motion
+import { motion } from "framer-motion";
 
 interface DataType {
   image: {
-    id: string;
     url: string;
   };
   _id: string;
   title: string;
-  description: string;
-  category: string;
   userId: {
     _id: string;
     name: string;
-    email: string;
     image: string;
   };
   createdAt: string;
@@ -39,6 +35,7 @@ const LatestBlog = () => {
           throw new Error("Failed to fetch data");
         }
         const result = await res.json();
+        console.log("Fetched Data:", result);
         setData(result);
       } catch (err) {
         setError("An error occurred while fetching data.");
@@ -78,7 +75,7 @@ const LatestBlog = () => {
           renderSkeletons
         ) : error ? (
           <div className="col-span-full text-center text-red-500">{error}</div>
-        ) : (
+        ) : data.length > 0 ? (
           data.slice(0, 9).map((item, index) => (
             <motion.div
               key={index}
@@ -126,6 +123,10 @@ const LatestBlog = () => {
               </Link>
             </motion.div>
           ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500">
+            No posts available.
+          </div>
         )}
       </div>
       <div className="flex justify-center items-center mt-8 w-full">
