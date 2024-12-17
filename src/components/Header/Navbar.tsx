@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
+import { usePathname } from "next/navigation";
 
 const LinksData = [
   {
@@ -29,6 +30,8 @@ const Navbar = ({
   styling?: string;
   closeSheet?: () => void;
 }) => {
+  const pathName = usePathname();
+
   return (
     <nav className="px-8 py-8">
       <div className={`${styling} flex gap-x-16 text-sm`}>
@@ -43,7 +46,9 @@ const Navbar = ({
             key={index}
           >
             <Link
-              className="hover:underline transition-all"
+              className={`${
+                pathName === item.link ? "text-blue-600" : ""
+              } transition-all`}
               onClick={closeSheet}
               href={item.link}
             >

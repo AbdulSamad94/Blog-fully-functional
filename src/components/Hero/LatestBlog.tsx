@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 interface DataType {
   image: {
@@ -24,6 +25,7 @@ const LatestBlog = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +41,7 @@ const LatestBlog = () => {
         setData(result);
       } catch (err) {
         setError("An error occurred while fetching data.");
+        router.refresh();
       } finally {
         setIsLoading(false);
       }
