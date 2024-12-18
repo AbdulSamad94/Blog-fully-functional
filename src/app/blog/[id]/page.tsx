@@ -25,7 +25,7 @@ interface DataType {
   title: string;
   description: string;
   category: string;
-  likes: any[]; // Array of user IDs who liked the post
+  likes: string[];
   userId: {
     _id: string;
     name: string;
@@ -87,7 +87,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           // Set like state
           if (blogData) {
             setLikesCount(blogData.likes.length);
-            setLiked(blogData.likes.includes(session.user.id));
+            setLiked(blogData.likes.includes(session.user.id as string));
           }
         } catch (error) {
           console.error(error);
@@ -113,10 +113,12 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       if (response.ok) {
         const result = await response.json();
 
-        // Update the likesCount based on the updated likes array returned
         const updatedLikes = result.likes;
-        setLikesCount(updatedLikes.length); // Use the length of the updated likes array
-        setLiked((prev) => !prev); // Toggle the like status
+
+        setLikesCount(updatedLikes.length);
+        setLiked((prev) => !prev);
+      } else {
+        console.error("Failed to toggle like");
       }
     } catch (error) {
       console.error("Error toggling like:", error);
@@ -130,7 +132,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   if (status !== "authenticated") {
     return (
       <section>
-        <h1>You must be logged in to view this page.</h1>
+        <h1 className="text-center text-3xl font-semibold">
+          You must be logged in to view this page.
+        </h1>
       </section>
     );
   }

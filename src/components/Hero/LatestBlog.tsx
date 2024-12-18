@@ -47,7 +47,7 @@ const LatestBlog = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [router]);
 
   const renderSkeletons = useMemo(
     () =>
