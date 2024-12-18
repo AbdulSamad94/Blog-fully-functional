@@ -53,7 +53,10 @@ const BlogSchema = new mongoose.Schema<BlogDocument>(
                 },
                 text: {
                     type: String,
-
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now
                 }
             }
         ],

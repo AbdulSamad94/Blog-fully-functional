@@ -30,9 +30,12 @@ const LatestBlog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/api/getData?limit=9`,
+          {
+            cache: "no-store",
+          }
+        );
         if (!res.ok) {
           throw new Error("Failed to fetch data");
         }
@@ -79,7 +82,7 @@ const LatestBlog = () => {
         ) : error ? (
           <div className="col-span-full text-center text-red-500">{error}</div>
         ) : data.length > 0 ? (
-          data.slice(0, 9).map((item, index) => (
+          data.map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 }}

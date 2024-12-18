@@ -3,6 +3,7 @@ import { Blog } from "@/lib/database/model/post";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 
 interface RouteParams {
     params: Promise<{
@@ -12,13 +13,10 @@ interface RouteParams {
 
 export const PUT = async (req: Request, { params }: RouteParams) => {
     try {
-        // Connect to the database
         await connectToDatabase();
 
-        // Extract the blog ID from params
         const { id } = await params;
 
-        // Get the current session
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
             return NextResponse.json(
@@ -27,9 +25,9 @@ export const PUT = async (req: Request, { params }: RouteParams) => {
             );
         }
 
-        const userId = session.user.id; // Assume `id` is part of the session user object
+        const userId = session.user.id;
+        const userObjectId = new mongoose.Types.ObjectId(userId);
 
-        // Find the blog post by ID
         const blog = await Blog.findById(id);
         if (!blog) {
             return NextResponse.json(
@@ -38,24 +36,32 @@ export const PUT = async (req: Request, { params }: RouteParams) => {
             );
         }
 
-        // Check if the user has already liked the post
-        const hasLiked = blog.likes.includes(userId);
+        console.log("Current likes array:", blog.likes);
+        console.log("User ID (ObjectId):", userObjectId);
+
+        const hasLiked = blog.likes.some(
+            (likeId: mongoose.Types.ObjectId) => likeId.equals(userObjectId)
+        );
 
         if (hasLiked) {
-            // Remove the user's ID from the likes array (unlike)
-            blog.likes = blog.likes.filter((likeId: string) => likeId !== userId);
+            blog.likes = blog.likes.filter(
+                (likeId: mongoose.Types.ObjectId) => !likeId.equals(userObjectId)
+            );
+            console.log("User unliked the post:", blog.likes);
         } else {
-            // Add the user's ID to the likes array (like)
-            blog.likes.push(userId);
+
+            blog.likes.push(userObjectId);
+            console.log("User liked the post:", blog.likes);
         }
 
-        // Save the changes
         await blog.save();
+
+        console.log("Updated likes array after saving:", blog.likes);
 
         return NextResponse.json({
             success: true,
             message: hasLiked ? "Post unliked successfully." : "Post liked successfully.",
-            likes: blog.likes, // Return the updated likes list
+            likes: blog.likes,
         });
     } catch (error) {
         console.error("Error in PUT request:", error);
