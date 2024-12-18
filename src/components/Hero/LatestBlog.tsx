@@ -82,7 +82,7 @@ const LatestBlog = () => {
         ) : error ? (
           <div className="col-span-full text-center text-red-500">{error}</div>
         ) : data.length > 0 ? (
-          data.map((item, index) => (
+          data.slice(0, 9).map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 }}
