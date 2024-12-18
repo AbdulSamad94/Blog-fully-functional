@@ -5,14 +5,14 @@ import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Pencil } from "lucide-react";
+import { Heart, Pencil } from "lucide-react";
 
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
-import Delete from "@/components/ui/Delete";
 import { Skeleton } from "@/components/ui/skeleton";
+import Delete from "@/components/ui/Delete";
 
 import { useState, useEffect } from "react";
 
@@ -25,6 +25,7 @@ interface DataType {
   title: string;
   description: string;
   category: string;
+  likes: any[]; // Array of user IDs who liked the post
   userId: {
     _id: string;
     name: string;
@@ -59,6 +60,8 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [blogData, setBlogData] = useState<DataType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState<string | null>(null);
+  const [isLiked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
 
   useEffect(() => {
     async function resolveParams() {
@@ -80,6 +83,12 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           const allData: DataType[] = await response.json();
           const blogData = allData.find((item) => item._id === id);
           setBlogData(blogData || null);
+
+          // Set like state
+          if (blogData) {
+            setLikesCount(blogData.likes.length);
+            setLiked(blogData.likes.includes(session.user.id));
+          }
         } catch (error) {
           console.error(error);
         } finally {
@@ -89,7 +98,30 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     };
 
     fetchData();
-  }, [id, status]);
+  }, [id, status, session]);
+  const handleLikeToggle = async () => {
+    if (!blogData) return;
+
+    try {
+      const response = await fetch(`/api/likes/${blogData._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+
+        // Update the likesCount based on the updated likes array returned
+        const updatedLikes = result.likes;
+        setLikesCount(updatedLikes.length); // Use the length of the updated likes array
+        setLiked((prev) => !prev); // Toggle the like status
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
 
   if (status === "loading" || isLoading) {
     return <SkeletonLoader />;
@@ -123,6 +155,22 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       >
         <div className="flex justify-between items-center mb-7">
           <Button className="text-xs h-8 px-3">{blogData.category}</Button>
+          <div className={`justify-center items-center flex-col mt-2`}>
+            {isLiked ? (
+              <Heart
+                onClick={handleLikeToggle}
+                size={20}
+                color="#ed5784"
+                cursor="pointer"
+              />
+            ) : (
+              <Heart size={20} onClick={handleLikeToggle} cursor="pointer" />
+            )}
+            <p className={`${isLiked ? "text-red-600" : ""} text-xs mt-2`}>
+              {likesCount}
+            </p>
+          </div>
+          {/* For Mobile */}
           {isAuthor && (
             <div className="flex md:hidden items-center gap-x-6">
               <Link href={`/updatePost/${blogData._id}`}>
