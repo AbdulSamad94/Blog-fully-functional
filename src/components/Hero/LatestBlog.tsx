@@ -44,7 +44,9 @@ const LatestBlog = () => {
           throw new Error("Fetched data is not an array");
         }
       } catch (err) {
-        setError("An error occurred while fetching data.");
+        setError(
+          "An error occurred while fetching data. Please Reload the Page"
+        );
         router.refresh();
       } finally {
         setIsLoading(false);
@@ -89,7 +91,7 @@ const LatestBlog = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg"
+              className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg w-full"
             >
               <Link href={`/blog/${item._id}`}>
                 <div>

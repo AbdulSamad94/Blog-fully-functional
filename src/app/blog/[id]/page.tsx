@@ -140,7 +140,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     return <SkeletonLoader />;
   }
 
-  if (status !== "authenticated") {
+  if (status === "unauthenticated") {
     return (
       <section>
         <h1 className="text-center text-3xl font-semibold">

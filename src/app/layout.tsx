@@ -1,9 +1,14 @@
-import { ThemeProvider } from "@/components/Theme/theme-provider";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
+
 import "./globals.css";
+
+import { ThemeProvider } from "@/components/Theme/theme-provider";
 import SessionWrapper from "@/components/Authorization/SessionWrapper";
+
 import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
+
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
@@ -27,6 +32,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Header />
             {children}
+            <Footer />
             <Analytics />
           </ThemeProvider>
         </body>

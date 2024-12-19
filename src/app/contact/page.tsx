@@ -1,4 +1,3 @@
-import React from "react";
 import Form from "@/components/ContactPage/Form";
 import { MailIcon, HomeIcon, PhoneCall } from "lucide-react";
 
@@ -47,6 +46,11 @@ const ContactPage = () => {
       </div>
     </section>
   );
+};
+
+export const metadata = {
+  title: "Contact Page",
+  description: "Welcome to the contact page of the Blog website",
 };
 
 export default ContactPage;
