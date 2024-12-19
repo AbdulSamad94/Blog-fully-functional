@@ -219,17 +219,13 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 onClick={handleLikeToggle}
                 className={`${isLiked ? "text-red-500 fill-red-500" : ""} cursor-pointer`}
               />
-              <p
-                className={`${isLiked ? "text-red-600" : ""} text-xs mt-2 text-center`}
-              >
-                {likesCount}
-              </p>
+              <p className={`text-xs mt-2 text-center`}>{likesCount}</p>
             </div>
             {/* Comments icon*/}
             <div>
               <MessageCircleMore
                 onClick={() => scrollToSection("comment")}
-                className="cursor-pointer"
+                className="cursor-pointer text-green-600"
                 size={20}
               />
               <p className="text-xs mt-2 text-center">{commentsCount}</p>

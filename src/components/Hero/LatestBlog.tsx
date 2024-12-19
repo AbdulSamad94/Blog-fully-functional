@@ -30,18 +30,19 @@ const LatestBlog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/getData?limit=9`,
-          {
-            cache: "no-store",
-          }
-        );
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+          cache: "no-store",
+        });
         if (!res.ok) {
           throw new Error("Failed to fetch data");
         }
         const result = await res.json();
         console.log("Fetched Data:", result);
-        setData(result);
+        if (Array.isArray(result)) {
+          setData(result);
+        } else {
+          throw new Error("Fetched data is not an array");
+        }
       } catch (err) {
         setError("An error occurred while fetching data.");
         router.refresh();
@@ -81,8 +82,8 @@ const LatestBlog = () => {
           renderSkeletons
         ) : error ? (
           <div className="col-span-full text-center text-red-500">{error}</div>
-        ) : data.length > 0 ? (
-          data.map((item, index) => (
+        ) : (
+          data.slice(0, 9).map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 }}
@@ -129,8 +130,6 @@ const LatestBlog = () => {
               </Link>
             </motion.div>
           ))
-        ) : (
-          renderSkeletons
         )}
       </div>
       <div className="flex justify-center items-center mt-8 w-full">

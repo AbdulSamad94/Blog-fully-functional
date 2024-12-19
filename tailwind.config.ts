@@ -17,6 +17,8 @@ const config: Config = {
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 				'light-logo': "url(/navbar/Union-light.png)",
 				'dark-logo': "url(/navbar/Union-dark.png)",
+				"contact-light": "url(/contact/illustration-light.svg)",
+				"contact-dark": "url(/contact/illustration-dark.svg)",
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

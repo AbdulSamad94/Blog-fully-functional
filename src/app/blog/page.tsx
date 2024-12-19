@@ -29,7 +29,11 @@ const Page = () => {
           cache: "no-store",
         });
         const result = await res.json();
-        setData(result);
+        if (Array.isArray(result)) {
+          setData(result);
+        } else {
+          console.error("Fetched data is not an array");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
