@@ -47,7 +47,7 @@ const Footer = () => {
           <div>
             <h2 className="font-medium text-lg">About</h2>
             <p className="mt-3 text-sm dark:text-gray-400 text-slate-700">
-              Hi! I my name is Abdul Samad, and i am a passionate Mern Stack
+              Hi!My name is Abdul Samad, and i am a passionate Mern Stack
               Developer with expertise in Next.js, React.js, MongoDB,
               Express.js, TailwindCSS etc, if you dont know about these
               technologies, Contact me for more info.
