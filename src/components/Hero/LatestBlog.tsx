@@ -75,7 +75,7 @@ const LatestBlog = () => {
   );
 
   return (
-    <section className="my-20 lg:px-20 px-2">
+    <section className="my-20 lg:px-20 2xl:px-8 px-2">
       <h1 className="text-2xl font-bold text-center lg:text-start">
         Latest Post
       </h1>
