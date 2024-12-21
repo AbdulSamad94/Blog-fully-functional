@@ -238,7 +238,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           height={400}
           className="w-full h-auto mb-4 mt-4 rounded-xl dark:shadow-slate-600 shadow-black shadow"
         />
-        <p className="dark:text-gray-300 whitespace-pre-wrap mt-10">
+        <p className="dark:text-gray-300 whitespace-pre-wrap break-words mt-10">
           {blogData.description}
         </p>
       </motion.div>
