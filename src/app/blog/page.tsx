@@ -53,7 +53,7 @@ const Page = () => {
   );
 
   return (
-    <section className="my-10">
+    <section className="my-10 2xl:px-8">
       <h1 className="text-4xl font-bold text-center">Blog Posts</h1>
       {isLoading ? (
         <div className="mt-10 flex justify-center items-center">
@@ -106,7 +106,7 @@ const Page = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg cursor-pointer md:w-[390px] w-[330px] hover:scale-95 transition-all"
+              className="mx-auto ring-1 ring-slate-200 dark:ring-slate-50 dark:ring-opacity-10 px-3 py-3 rounded-lg cursor-pointer w-full hover:scale-95 transition-all"
             >
               <Link href={`/blog/${item._id}`}>
                 <Image
