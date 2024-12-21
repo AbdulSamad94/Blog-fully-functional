@@ -83,32 +83,32 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (id && status === "authenticated") {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_URL}/api/getData`
-          );
-          if (!response.ok) throw new Error("Failed to fetch data from API");
+      if (!id) return;
 
-          const allData: DataType[] = await response.json();
-          const blogData = allData.find((item) => item._id === id);
-          setBlogData(blogData || null);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/api/getData`
+        );
+        if (!response.ok) throw new Error("Failed to fetch data from API");
 
-          if (blogData) {
-            setLikesCount(blogData.likes.length);
-            setLiked(blogData.likes.includes(session.user.id as string));
-            setCommentsCount(blogData.comments.length);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
+        const allData: DataType[] = await response.json();
+        const blogData = allData.find((item) => item._id === id);
+        setBlogData(blogData || null);
+
+        if (blogData && session?.user) {
+          setLikesCount(blogData.likes.length);
+          setLiked(blogData.likes.includes(session.user.id as string));
+          setCommentsCount(blogData.comments.length);
         }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [id, status, session]);
+  }, [id, session]);
 
   const handleLikeToggle = async () => {
     if (!blogData) return;
@@ -123,7 +123,6 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
       if (response.ok) {
         const result = await response.json();
-
         const updatedLikes = result.likes;
 
         setLikesCount(updatedLikes.length);
@@ -136,25 +135,25 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     }
   };
 
-  if (status === "loading" || isLoading) {
+  if (isLoading) {
     return <SkeletonLoader />;
-  }
-
-  if (status === "unauthenticated") {
-    return (
-      <section>
-        <h1 className="text-center text-3xl font-semibold">
-          You must be logged in to view this page.
-        </h1>
-      </section>
-    );
   }
 
   if (!blogData) {
     return (
       <section>
-        <h1>Blog post not found</h1>
+        <h1 className="text-center text-3xl font-semibold">
+          Blog post not found.
+        </h1>
       </section>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <h1 className="text-center text-3xl font-semibold my-48">
+        You must be logged in to view this page.
+      </h1>
     );
   }
 

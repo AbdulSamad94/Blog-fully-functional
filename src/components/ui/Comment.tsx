@@ -5,6 +5,19 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { SendHorizontal, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "./alert-dialog";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface CommentType {
   _id: string;
@@ -18,7 +31,7 @@ interface CommentType {
 }
 
 const CommentsSection = ({ postId }: { postId: string }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [comments, setComments] = useState<CommentType[]>([]);
   const [commentText, setCommentText] = useState("");
   const [showSendButton, setShowSendButton] = useState(false);
@@ -81,6 +94,7 @@ const CommentsSection = ({ postId }: { postId: string }) => {
       });
 
       if (response.ok) {
+        toast.success("Comment deleted successfully.");
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentId)
         );
@@ -141,24 +155,54 @@ const CommentsSection = ({ postId }: { postId: string }) => {
             />
 
             <div className="flex justify-between w-full">
-              <div>
-                <p className="text-sm font-semibold">{comment.user.name}</p>
-                <p className="text-xs md:text-sm font-light">{comment.text}</p>
+              {/*comment info */}
+              <div className="flex flex-col w-[90%]">
+                <div className="flex flex-wrap items-center gap-x-3">
+                  <p className="text-sm font-semibold">{comment.user.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {formatDistanceToNow(new Date(comment.createdAt), {
+                      addSuffix: true,
+                    })}
+                  </p>
+                </div>
+                <p className="text-xs md:text-sm font-light break-words w-[85%] mt-1">
+                  {comment.text}
+                </p>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                {formatDistanceToNow(new Date(comment.createdAt), {
-                  addSuffix: true,
-                })}
-              </p>
+              {/* Delete button */}
+              <div className="flex items-center md:justify-end gap-x-4">
+                {/* Delete Button */}
+                {session?.user?.id === comment.user._id && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Trash2
+                        size={16}
+                        className="text-red-500 cursor-pointer"
+                      />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Do you want to delete this comment?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your comment and remove all related data.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteComment(comment._id)}
+                        >
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
             </div>
-            {/* Delete button */}
-            {session?.user?.id === comment.user._id && (
-              <Trash2
-                size={16}
-                className="text-red-500 cursor-pointer mt-1"
-                onClick={() => handleDeleteComment(comment._id)}
-              />
-            )}
           </div>
         ))
       ) : (
