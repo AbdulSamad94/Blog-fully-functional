@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Heart, Pencil, MessageCircleMore } from "lucide-react";
+import { Heart, Pencil, MessageCircleMore, Plus } from "lucide-react";
 
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
@@ -33,7 +33,7 @@ interface DataType {
     name: string;
     email: string;
     image: string;
-    followers: number;
+    followers: string[];
   };
   createdAt: string;
 }
@@ -71,7 +71,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState<string>("");
   const [isLiked, setLiked] = useState(false);
+  const [isfollowed, setIsFollowed] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [follwersCount, setFollowersCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
 
   useEffect(() => {
@@ -112,7 +114,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   }, [id, session]);
 
   const handleLikeToggle = async () => {
-    if (!blogData) return;
+    if (!blogData || !session?.user) return;
 
     try {
       const response = await fetch(`/api/likes/${blogData._id}`, {
@@ -126,13 +128,43 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         const result = await response.json();
         const updatedLikes = result.likes;
 
-        setLikesCount(updatedLikes.length);
         setLiked(updatedLikes.includes(session?.user.id));
+        setLikesCount(updatedLikes.length);
       } else {
         console.error("Failed to toggle like");
       }
     } catch (error) {
       console.error("Error toggling like:", error);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!blogData || !session?.user) return;
+
+    try {
+      const response = await fetch("/api/updateData", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          targetUserId: blogData.userId._id,
+          currentUserId: session.user.id,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const updateFollowers = result.followers;
+        setIsFollowed(updateFollowers.includes(session?.user.id));
+        setFollowersCount(updateFollowers.length);
+      }
+
+      alert("Followed successfully!");
+      console.log("Updated followers:", follwersCount);
+    } catch (error) {
+      console.error("Error following user:", error);
+      alert("Something went wrong");
     }
   };
 
@@ -197,9 +229,15 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             <p className="text-accent-foreground md:text-sm text-xs">
               {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
             </p>
-            <p className="text-accent-foreground md:text-sm text-xs">
-              {blogData.userId.followers} followers
-            </p>
+            <div
+              onClick={handleFollow}
+              className="flex items-center gap-x-2 dark:bg-blue-500 bg-slate-100 text-blue-500 shadow cursor-pointer dark:text-white text-center px-3 py-2 rounded-full"
+            >
+              <Plus size={16} />
+              <p className="md:text-sm text-xs">
+                {isfollowed ? "Following" : "Follow"} {follwersCount}
+              </p>
+            </div>
           </div>
           {isAuthor && (
             <div className="md:flex hidden items-center gap-x-6">
