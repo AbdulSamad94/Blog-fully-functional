@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
+import { LogOut, User2 } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -41,10 +42,16 @@ export default function Dashboard() {
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuItem>
+                <User2 size={20} />
+                <Link className="flex" href={`/profile/${session.user.id}`}>
+                  {" "}
+                  View Profile
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()}>
-                Sign out <LogOut size={20} className="ml-4" />
+                <LogOut size={20} /> Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
