@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Heart, Pencil, MessageCircleMore, Plus } from "lucide-react";
+import { Heart, Pencil, MessageCircleMore } from "lucide-react";
 
 import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
@@ -16,6 +16,8 @@ import Delete from "@/components/ui/Delete";
 
 import { useState, useEffect } from "react";
 import CommentsSection from "@/components/ui/Comment";
+
+import { ToastContainer, toast } from "react-toastify";
 
 interface DataType {
   image: {
@@ -101,6 +103,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         if (blogData && session?.user) {
           setLikesCount(blogData.likes.length);
           setLiked(blogData.likes.includes(session.user.id as string));
+          setIsFollowed(
+            blogData.userId.followers.includes(session.user.id as string)
+          );
+          setFollowersCount(blogData.userId.followers.length);
           setCommentsCount(blogData.comments.length);
         }
       } catch (error) {
@@ -144,27 +150,24 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     try {
       const response = await fetch("/api/updateData", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+
+        // SendingThePostMakerID and CurrentUserID
+
         body: JSON.stringify({
           targetUserId: blogData.userId._id,
           currentUserId: session.user.id,
         }),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        const updateFollowers = result.followers;
-        setIsFollowed(updateFollowers.includes(session?.user.id));
-        setFollowersCount(updateFollowers.length);
-      }
+      if (!response.ok) throw new Error("Failed to update followers");
 
-      alert("Followed successfully!");
-      console.log("Updated followers:", follwersCount);
+      const result = await response.json();
+      const updatedFollowers = result.followers;
+      setIsFollowed(updatedFollowers.includes(session.user.id));
+      setFollowersCount(updatedFollowers.length);
     } catch (error) {
       console.error("Error following user:", error);
-      alert("Something went wrong");
     }
   };
 
@@ -215,27 +218,33 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
         <h1 className="text-3xl font-semibold mb-4">{blogData.title}</h1>
         <div className="flex justify-between items-center mt-8">
-          <div className="flex items-center gap-x-4">
-            <Image
-              src={blogData.userId.image}
-              alt="profile"
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
-            <p className="text-accent-foreground md:text-sm text-xs font-medium">
-              {blogData.userId.name}
-            </p>
-            <p className="text-accent-foreground md:text-sm text-xs">
-              {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
-            </p>
-            <div
-              onClick={handleFollow}
-              className="flex items-center gap-x-2 dark:bg-blue-500 bg-slate-100 text-blue-500 shadow cursor-pointer dark:text-white text-center px-3 py-2 rounded-full"
-            >
-              <Plus size={16} />
-              <p className="md:text-sm text-xs">
-                {isfollowed ? "Following" : "Follow"} {follwersCount}
+          <div className="flex items-center gap-x-4 flex-wrap gap-y-2">
+            {/* Image */}
+            <div>
+              <Image
+                src={blogData.userId.image}
+                alt="profile"
+                width={46}
+                height={46}
+                className="rounded-full"
+              />
+            </div>
+            <div>
+              <div className="flex gap-x-3">
+                <p className="text-accent-foreground md:text-sm text-xs font-medium">
+                  {blogData.userId.name}
+                </p>
+                {!isAuthor && (
+                  <p
+                    onClick={handleFollow}
+                    className="md:text-sm text-xs text-blue-700 dark:text-blue-500 font-medium flex items-center gap-x-2 cursor-pointer text-center"
+                  >
+                    • {isfollowed ? "Following" : "Follow"}
+                  </p>
+                )}
+              </div>
+              <p className="text-accent-foreground text-xs mt-2">
+                {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
               </p>
             </div>
           </div>
