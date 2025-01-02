@@ -33,6 +33,7 @@ interface DataType {
     name: string;
     email: string;
     image: string;
+    followers: number;
   };
   createdAt: string;
 }
@@ -195,6 +196,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             </p>
             <p className="text-accent-foreground md:text-sm text-xs">
               {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
+            </p>
+            <p className="text-accent-foreground md:text-sm text-xs">
+              {blogData.userId.followers} followers
             </p>
           </div>
           {isAuthor && (
