@@ -220,7 +220,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         <div className="flex justify-between items-center mt-8">
           <div className="flex items-center gap-x-4 flex-wrap gap-y-2">
             {/* Image */}
-            <div>
+            <Link href={`/profile/${blogData.userId._id}`}>
               <Image
                 src={blogData.userId.image}
                 alt="profile"
@@ -228,12 +228,14 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 height={46}
                 className="rounded-full"
               />
-            </div>
+            </Link>
             <div>
               <div className="flex gap-x-3">
-                <p className="text-accent-foreground md:text-sm text-xs font-medium">
-                  {blogData.userId.name}
-                </p>
+                <Link href={`/profile/${blogData.userId._id}`}>
+                  <p className="text-accent-foreground md:text-sm text-xs font-medium">
+                    {blogData.userId.name}
+                  </p>
+                </Link>
                 {!isAuthor && (
                   <p
                     onClick={handleFollow}

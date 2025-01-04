@@ -9,7 +9,7 @@ export const GET = async () => {
     const blogs = await Blog.find()
       .populate({
         path: "userId",
-        select: "name email image followers",
+        select: "name email image followers bio Bannerimage",
       })
       .sort({ createdAt: -1 });
     return NextResponse.json(blogs, { status: 200 });
