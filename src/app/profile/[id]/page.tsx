@@ -1,4 +1,7 @@
 import Image from "next/image";
+import FollowButton from "@/components/ui/Follow";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 interface DataType {
   image: {
@@ -45,11 +48,27 @@ const page = async ({ params }: RouteParams) => {
   const data = await fetchUserData();
 
   const user: DataType = data.find((item: DataType) => item.userId._id === id);
+  const userPosts = data.filter((e: DataType) => e.userId._id === id);
 
+  const session = await getServerSession(authOptions);
+  const currentUserId = session?.user?.id;
+
+  // Check if the current user is following the target user
+  const isFollowing = user.userId.followers.includes(currentUserId || "");
+
+  if (!user) {
+    return (
+      <h1 className="text-4xl mt-4 w-full h-[600px] flex justify-center items-center">
+        User Not Found.
+      </h1>
+    );
+  }
+
+  const isAuthor = session?.user.id === user.userId._id;
   return (
     <section className="flex justify-center items-center">
       <div className="w-[65%] mt-8">
-        <div className="bg-background shadow">
+        <div className="bg-background shadow-lg pb-8">
           <Image
             src={user.userId.Bannerimage.url}
             alt=""
@@ -67,16 +86,31 @@ const page = async ({ params }: RouteParams) => {
             />
             <div className="ml-8">
               <h1 className="text-3xl font-semibold">{user.userId.name}</h1>
-              <div className="flex items-center mt-2 gap-x-4">
-                <p className="text-gray-400">{user.userId.email}</p>
-                <p className="text-gray-400">{"•"}</p>
-                <p className="ml-2 text-gray-400">
-                  {user.userId.followers.length} Followers
-                </p>
+              <div className="flex items-center mt-2 gap-x-2 text-slate-500 dark:text-gray-400">
+                <p>{user.userId.email}</p>
+                <p>{"•"}</p>
+                <p>{user.userId.followers.length} Followers</p>
+                <p>{"•"}</p>
+                <p>{userPosts.length} Posts</p>
               </div>
-              <p className="text-gray-400 mt-2">{user.userId.bio}</p>
+              <p className="text-slate-500 dark:text-gray-400 mt-2">
+                {user.userId.bio}
+              </p>
+              <div className="mt-3">
+                {!isAuthor && (
+                  <FollowButton
+                    targetUserId={user.userId._id}
+                    currentUserId={currentUserId}
+                    isFollowing={isFollowing}
+                    followersCount={user.userId.followers.length}
+                  />
+                )}
+              </div>
             </div>
           </div>
+        </div>
+        <div>
+          <h1>Posts</h1>
         </div>
       </div>
     </section>

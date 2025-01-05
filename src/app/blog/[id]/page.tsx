@@ -16,8 +16,7 @@ import Delete from "@/components/ui/Delete";
 
 import { useState, useEffect } from "react";
 import CommentsSection from "@/components/ui/Comment";
-
-import { ToastContainer, toast } from "react-toastify";
+import FollowButton from "@/components/ui/Follow";
 
 interface DataType {
   image: {
@@ -73,9 +72,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState<string>("");
   const [isLiked, setLiked] = useState(false);
-  const [isfollowed, setIsFollowed] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
-  const [follwersCount, setFollowersCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
 
   useEffect(() => {
@@ -103,7 +102,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         if (blogData && session?.user) {
           setLikesCount(blogData.likes.length);
           setLiked(blogData.likes.includes(session.user.id as string));
-          setIsFollowed(
+          setIsFollowing(
             blogData.userId.followers.includes(session.user.id as string)
           );
           setFollowersCount(blogData.userId.followers.length);
@@ -145,18 +144,12 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   const handleFollow = async () => {
-    if (!blogData || !session?.user) return;
-
     try {
       const response = await fetch("/api/updateData", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-
-        // SendingThePostMakerID and CurrentUserID
-
         body: JSON.stringify({
-          targetUserId: blogData.userId._id,
-          currentUserId: session.user.id,
+          targetUserId: blogData?.userId._id,
         }),
       });
 
@@ -164,8 +157,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
       const result = await response.json();
       const updatedFollowers = result.followers;
-      setIsFollowed(updatedFollowers.includes(session.user.id));
+      const isFollowing = result.message.includes("Followed");
       setFollowersCount(updatedFollowers.length);
+      setIsFollowing(isFollowing);
     } catch (error) {
       console.error("Error following user:", error);
     }
@@ -241,7 +235,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                     onClick={handleFollow}
                     className="md:text-sm text-xs text-blue-700 dark:text-blue-500 font-medium flex items-center gap-x-2 cursor-pointer text-center"
                   >
-                    • {isfollowed ? "Following" : "Follow"}
+                    • {isFollowing ? "Following" : "Follow"}
                   </p>
                 )}
               </div>

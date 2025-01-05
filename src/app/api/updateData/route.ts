@@ -1,11 +1,12 @@
-import connectToDatabase from "@/lib/database/db_connection";
-import { User } from "@/lib/database/model/User";
+// app/api/updateData/route.ts
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import connectToDatabase from "@/lib/database/db_connection";
+import { User } from "@/lib/database/model/User";
 
-export const PUT = async (req: Request) => {
+export async function PUT(req: Request) {
   try {
     // Connect to the database
     await connectToDatabase();
@@ -19,6 +20,7 @@ export const PUT = async (req: Request) => {
       );
     }
 
+    // Parse the request body
     const { targetUserId } = await req.json();
 
     if (!targetUserId) {
@@ -28,6 +30,7 @@ export const PUT = async (req: Request) => {
       );
     }
 
+    // Convert IDs to MongoDB ObjectId
     const currentUserId = new mongoose.Types.ObjectId(session.user.id);
     const targetUserObjectId = new mongoose.Types.ObjectId(targetUserId);
 
@@ -45,6 +48,7 @@ export const PUT = async (req: Request) => {
       (followerId: mongoose.Types.ObjectId) => followerId.equals(currentUserId)
     );
 
+    // Update the followers list
     if (isFollowing) {
       // Unfollow: Remove currentUserId from targetUser's followers
       targetUser.followers = targetUser.followers.filter(
@@ -56,14 +60,17 @@ export const PUT = async (req: Request) => {
       targetUser.followers.push(currentUserId);
     }
 
+    // Save the updated user document
     await targetUser.save();
 
+    // Return the response
     return NextResponse.json({
       success: true,
       message: isFollowing
         ? "Unfollowed successfully."
         : "Followed successfully.",
       followers: targetUser.followers,
+      isFollowing: !isFollowing,
     });
   } catch (error) {
     console.error("Error in PUT request:", error);
@@ -72,4 +79,4 @@ export const PUT = async (req: Request) => {
       { status: 500 }
     );
   }
-};
+}
