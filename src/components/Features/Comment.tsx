@@ -15,7 +15,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "./alert-dialog";
+} from "../ui/alert-dialog";
 import { ToastContainer, toast } from "react-toastify";
 
 interface CommentType {
@@ -209,6 +209,7 @@ const CommentsSection = ({ postId }: { postId: string }) => {
           No comments yet. Be the first to comment!
         </p>
       )}
+      <ToastContainer />
     </div>
   );
 };

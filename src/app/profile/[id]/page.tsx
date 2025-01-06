@@ -1,5 +1,5 @@
 import Image from "next/image";
-import FollowButton from "@/components/ui/Follow";
+import FollowButton from "@/components/Features/Follow";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { formatDistanceToNow } from "date-fns";

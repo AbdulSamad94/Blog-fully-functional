@@ -12,10 +12,10 @@ import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import Delete from "@/components/ui/Delete";
+import Delete from "@/components/Features/Delete";
 
 import { useState, useEffect } from "react";
-import CommentsSection from "@/components/ui/Comment";
+import CommentsSection from "@/components/Features/Comment";
 
 interface DataType {
   image: {

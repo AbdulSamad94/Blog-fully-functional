@@ -7,8 +7,6 @@ import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import { easeInOut, motion } from "motion/react";
 
-import "react-toastify/dist/ReactToastify.css";
-
 const categories = [
   "Technology",
   "Social",
@@ -21,8 +19,6 @@ const categories = [
 ];
 
 export default function CreatePostPage() {
-  // The States
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -46,7 +42,7 @@ export default function CreatePostPage() {
       return;
     }
 
-    //image upload to cloudinary the freakin time saver
+    //image upload to cloudinary the freakin JOD
     const uploadImage = async () => {
       if (!image) return null;
 

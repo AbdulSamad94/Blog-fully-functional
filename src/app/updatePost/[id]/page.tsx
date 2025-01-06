@@ -7,7 +7,6 @@ import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "motion/react";
-import "react-toastify/dist/ReactToastify.css";
 
 const categories = [
   "Technology",
@@ -32,7 +31,6 @@ export default function CreatePostPage({
   const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [skeleton, setSkeleton] = useState(true);
-
   const [id, setId] = useState<string | null>(null);
   const { data: session } = useSession();
   const router = useRouter();
@@ -49,9 +47,9 @@ export default function CreatePostPage({
     resolveParams();
   }, [params]);
 
-  useEffect(() => {
-    if (!id) return;
+  if (!id) return;
 
+  useEffect(() => {
     const fetchPostData = async () => {
       try {
         const response = await fetch(
