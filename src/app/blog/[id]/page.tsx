@@ -16,7 +16,6 @@ import Delete from "@/components/ui/Delete";
 
 import { useState, useEffect } from "react";
 import CommentsSection from "@/components/ui/Comment";
-import FollowButton from "@/components/ui/Follow";
 
 interface DataType {
   image: {

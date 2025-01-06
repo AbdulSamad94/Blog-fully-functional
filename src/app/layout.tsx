@@ -9,10 +9,8 @@ import SessionWrapper from "@/components/Authorization/SessionWrapper";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 
-import { Analytics } from "@vercel/analytics/react";
-
 export const metadata: Metadata = {
-  title: "Blog Application By AS",
+  title: "Full Stack Blog Application",
   description:
     "This is a fully functional blog application using nextjs where you can create, edit, update and delete your posts.",
   icons: "/favicon/blog_icon.png",
@@ -33,7 +31,6 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
-            <Analytics />
           </ThemeProvider>
         </body>
       </html>

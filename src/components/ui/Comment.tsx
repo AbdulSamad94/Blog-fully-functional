@@ -17,7 +17,6 @@ import {
   AlertDialogAction,
 } from "./alert-dialog";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 interface CommentType {
   _id: string;
@@ -31,7 +30,7 @@ interface CommentType {
 }
 
 const CommentsSection = ({ postId }: { postId: string }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [comments, setComments] = useState<CommentType[]>([]);
   const [commentText, setCommentText] = useState("");
   const [showSendButton, setShowSendButton] = useState(false);
