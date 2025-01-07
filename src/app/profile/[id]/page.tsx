@@ -3,8 +3,9 @@ import FollowButton from "@/components/Features/Follow";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { formatDistanceToNow } from "date-fns";
-import { Heart, MessageCircleMore } from "lucide-react";
+import { Heart, MessageCircleMore, PencilIcon } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface DataType {
   image: {
@@ -38,6 +39,12 @@ interface RouteParams {
   }>;
 }
 
+export async function generateStaticParams() {
+  const data = await fetchUserData();
+  return data.map((user: DataType) => ({
+    id: user.userId._id,
+  }));
+}
 const fetchUserData = async () => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
     cache: "no-store",
@@ -58,7 +65,6 @@ const page = async ({ params }: RouteParams) => {
   const session = await getServerSession(authOptions);
   const currentUserId = session?.user?.id;
 
-  // Check if the current user is following the target user
   const isFollowing = user.userId.followers.includes(currentUserId || "");
 
   if (!user) {
@@ -103,7 +109,7 @@ const page = async ({ params }: RouteParams) => {
               <p className="text-slate-500 dark:text-gray-400 mt-2 text-sm lg:text-base">
                 {user.userId.bio}
               </p>
-              <div className="mt-3 flex justify-center lg:justify-normal items-centers">
+              <div className="mt-3 flex justify-center lg:justify-between items-centers">
                 {!isAuthor && (
                   <FollowButton
                     targetUserId={user.userId._id}
@@ -111,6 +117,18 @@ const page = async ({ params }: RouteParams) => {
                     isFollowing={isFollowing}
                     followersCount={user.userId.followers.length}
                   />
+                )}
+                {isAuthor && (
+                  <Link
+                    className="flex gap-x-4 items-center bg-primary py-2 px-4 rounded-md text-white font-medium hover:bg-primary/50 transition-all"
+                    href={`/edit-profile/${user.userId._id}`}
+                  >
+                    Edit Profile{" "}
+                    <PencilIcon
+                      size={20}
+                      className="flex justify-end text-green-500 "
+                    />
+                  </Link>
                 )}
               </div>
             </div>
