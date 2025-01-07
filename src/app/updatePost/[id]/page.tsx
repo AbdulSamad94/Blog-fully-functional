@@ -47,9 +47,10 @@ export default function CreatePostPage({
     resolveParams();
   }, [params]);
 
-  if (!id) return;
-
+  
   useEffect(() => {
+if (!id) return;
+
     const fetchPostData = async () => {
       try {
         const response = await fetch(
