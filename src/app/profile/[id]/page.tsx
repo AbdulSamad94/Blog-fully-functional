@@ -1,12 +1,17 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import FollowButton from "@/components/Features/Follow";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, MessageCircleMore, PencilIcon } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import SkeletonProfile from "@/components/Profile/Skeleton"; // your skeleton UI
+import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
 
+// Define your data interface
 interface DataType {
   image: {
     id: string;
@@ -33,39 +38,41 @@ interface DataType {
   createdAt: string;
 }
 
-interface RouteParams {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export async function generateStaticParams() {
-  const data = await fetchUserData();
-  return data.map((user: DataType) => ({
-    id: user.userId._id,
-  }));
-}
-const fetchUserData = async () => {
+const fetchUserData = async (): Promise<DataType[]> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
     cache: "no-store",
   });
-  const data = await response.json();
-  return data;
+  if (!response.ok) throw new Error("Failed to fetch data");
+  return response.json();
 };
 
-const page = async ({ params }: RouteParams) => {
-  const { id } = await params;
-  const data = await fetchUserData();
+export default function ProfilePage() {
+  const { id } = useParams(); // Get the dynamic profile id
+  const { data: session } = useSession();
+  const [usersData, setUsersData] = useState<DataType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const user: DataType = data.find((item: DataType) => item.userId._id === id);
-  const userPosts: DataType[] = data.filter(
-    (e: DataType) => e.userId._id === id
+  useEffect(() => {
+    fetchUserData()
+      .then((data) => {
+        setUsersData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <SkeletonProfile />;
+  }
+
+  // Filter the fetched data for the profile
+  const user: DataType | undefined = usersData.find(
+    (item) => item.userId._id === id
   );
-
-  const session = await getServerSession(authOptions);
-  const currentUserId = session?.user?.id;
-
-  const isFollowing = user.userId.followers.includes(currentUserId || "");
+  const userPosts: DataType[] = usersData.filter((e) => e.userId._id === id);
 
   if (!user) {
     return (
@@ -75,17 +82,26 @@ const page = async ({ params }: RouteParams) => {
     );
   }
 
-  const isAuthor = session?.user.id === user.userId._id;
+  const currentUserId = session?.user?.id || "";
+  const isFollowing = user.userId.followers.includes(currentUserId);
+  const isAuthor = session?.user?.id === user.userId._id;
+
   return (
-    <section className="flex justify-center items-center">
+    // Added px-4 and py-6 for small-screen padding; large screen classes remain unchanged.
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="flex justify-center items-center px-4 py-6"
+    >
       <div className="lg:w-[85%] xl:w-[65%] mt-8">
         <div className="bg-background shadow-lg pb-8">
           <Image
             src={user.userId.Bannerimage.url}
-            alt=""
+            alt="Banner"
             width={400}
             height={400}
-            className="lg:w-full lg:h-[300px] h-[120px] lg:rounded-tr-xl lg:rounded-tl-xl"
+            className="lg:w-full lg:h-[300px] h-[120px] rounded-tr-xl rounded-tl-xl"
           />
           <div className="lg:px-8 flex mt-4 items-center lg:flex-row flex-col">
             <Image
@@ -95,8 +111,8 @@ const page = async ({ params }: RouteParams) => {
               height={200}
               className="rounded-full shadow lg:w-[200px] lg:h-auto w-24 h-24"
             />
-            <div className="lg:ml-8 text-center lg:text-start">
-              <h1 className="lg:text-3xl text-2xl font-semibold mt-4 lg:mt-0">
+            <div className="lg:ml-8 text-center lg:text-start mt-4 lg:mt-0">
+              <h1 className="lg:text-3xl text-2xl font-semibold">
                 {user.userId.name}
               </h1>
               <div className="flex lg:flex-row flex-col items-center mt-2 gap-2 text-sm lg:text-base text-slate-500 dark:text-gray-400">
@@ -109,7 +125,7 @@ const page = async ({ params }: RouteParams) => {
               <p className="text-slate-500 dark:text-gray-400 mt-2 text-sm lg:text-base">
                 {user.userId.bio}
               </p>
-              <div className="mt-3 flex justify-center lg:justify-between items-centers">
+              <div className="mt-3 flex justify-center lg:justify-between items-center">
                 {!isAuthor && (
                   <FollowButton
                     targetUserId={user.userId._id}
@@ -126,7 +142,7 @@ const page = async ({ params }: RouteParams) => {
                     Edit Profile{" "}
                     <PencilIcon
                       size={20}
-                      className="flex justify-end text-green-500 "
+                      className="flex justify-end text-green-500"
                     />
                   </Link>
                 )}
@@ -138,9 +154,9 @@ const page = async ({ params }: RouteParams) => {
           <h1 className="text-3xl font-semibold mb-10">Posts</h1>
           {userPosts.map((item, index) => (
             <Link
+              key={index}
               href={`/blog/${item._id}`}
               className="mx-3 border-t border-slate-300 dark:border-slate-600 py-10 flex flex-col lg:flex-row justify-between items-center gap-x-4"
-              key={index}
             >
               <div className="lg:w-[70%]">
                 <div className="flex items-center gap-x-4">
@@ -154,7 +170,7 @@ const page = async ({ params }: RouteParams) => {
                   <p className="font-semibold">{user.userId.name}</p>
                 </div>
                 <h1 className="mt-4 text-3xl font-semibold">{item.title}</h1>
-                <p className="mt-3 dark:text-gray-400 whitespace-break-spaces break-words">
+                <p className="mt-3 dark:text-gray-400 whitespace-break-spaces break-all">
                   {item.description.substring(0, 150)} .....
                 </p>
                 <div className="mt-4 flex gap-x-6 items-center text-sm text-gray-500 dark:text-gray-400">
@@ -186,13 +202,6 @@ const page = async ({ params }: RouteParams) => {
           <div className="border-t border-slate-300 dark:border-slate-600 mx-3"></div>
         </div>
       </div>
-    </section>
+    </motion.div>
   );
-};
-
-export const metadata = {
-  title: "Profile Page",
-  description: "Welcome to the Profile page of the Blog website",
-};
-
-export default page;
+}

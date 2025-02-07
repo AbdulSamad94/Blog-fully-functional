@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Router from "next/router";
-import { toast } from "react-toastify";
-import { Plus } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import { Plus, Check } from "lucide-react";
+
+import "react-toastify/dist/ReactToastify.css";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -47,13 +48,21 @@ const FollowButton = ({
   };
 
   return (
-    <button
-      onClick={handleFollow}
-      className={`flex items-center gap-x-2 font-semibold px-4 py-2 text-sm text-center rounded-lg ${isFollowing ? "bg-blue-600 text-white" : "dark:bg-slate-900 dark:bg-opacity-45 bg-slate-200 text-blue-500"}`}
-    >
-      <Plus size={15} className={`${isFollowing ? "hidden" : "block"}`} />{" "}
-      {isFollowing ? `Following` : `Follow`}
-    </button>
+    <>
+      <button
+        onClick={handleFollow}
+        className={`flex items-center gap-2 font-semibold text-sm rounded-full transition-all duration-300 px-6 py-2 
+      ${
+        isFollowing
+          ? "bg-blue-600 dark:bg-blue-800 text-white shadow-lg hover:bg-blue-700 dark:hover:bg-blue-900 transform hover:scale-105"
+          : "bg-white dark:bg-slate-800 border border-blue-500 text-blue-500 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transform hover:scale-105"
+      }`}
+      >
+        {isFollowing ? <Check size={16} /> : <Plus size={16} />}
+        {isFollowing ? "Following" : "Follow"}
+      </button>
+      <ToastContainer />
+    </>
   );
 };
 
