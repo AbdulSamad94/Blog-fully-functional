@@ -27,31 +27,31 @@ const LatestBlog = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const result = await res.json();
-        console.log("Fetched Data:", result);
-        if (Array.isArray(result)) {
-          setData(result);
-        } else {
-          throw new Error("Fetched data is not an array");
-        }
-      } catch (err) {
-        setError(
-          "An error occurred while fetching data. Please Reload the Page"
-        );
-        router.refresh();
-      } finally {
-        setIsLoading(false);
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+        cache: "no-store",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
+      const result = await res.json();
+      if (Array.isArray(result)) {
+        setData(result);
+        setError(null);
+      } else {
+        throw new Error("Fetched data is not an array");
+      }
+    } catch (err) {
+      console.error("Failed to fetch user data:", err);
+      setError("An error occurred while fetching data. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [router]);
 

@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, MessageCircleMore, PencilIcon } from "lucide-react";
 import Link from "next/link";
-import SkeletonProfile from "@/components/Profile/Skeleton"; // your skeleton UI
+import SkeletonProfile from "@/components/Profile/Skeleton";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 
@@ -41,6 +41,7 @@ interface DataType {
 const fetchUserData = async (): Promise<DataType[]> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
     cache: "no-store",
+    credentials: "include",
   });
   if (!response.ok) throw new Error("Failed to fetch data");
   return response.json();

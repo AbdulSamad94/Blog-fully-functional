@@ -27,6 +27,7 @@ const Page = () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
           cache: "no-store",
+          credentials: "include",
         });
         const result = await res.json();
         if (Array.isArray(result)) {
