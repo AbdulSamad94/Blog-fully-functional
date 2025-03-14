@@ -149,7 +149,7 @@ export default function ProfilePage() {
               alt="profile-img"
               width={200}
               height={200}
-              className="rounded-full shadow lg:w-[200px] lg:h-auto w-24 h-24"
+              className="rounded-full shadow lg:w-[200px] lg:h-[200px] w-24 h-24"
             />
             <div className="lg:ml-8 text-center lg:text-start mt-4 lg:mt-0">
               <h1 className="lg:text-3xl text-2xl font-semibold">
