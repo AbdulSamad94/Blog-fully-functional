@@ -54,7 +54,7 @@ const Page = () => {
   );
 
   return (
-    <section className="my-10 2xl:px-8">
+    <section className="my-20 lg:px-20 2xl:px-8 px-2">
       <h1 className="text-4xl font-bold text-center">Blog Posts</h1>
       {isLoading ? (
         <div className="mt-10 flex justify-center items-center">
