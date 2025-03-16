@@ -29,7 +29,7 @@ const LatestBlog = () => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+      const res = await fetch(`/api/getData`, {
         cache: "no-store",
         credentials: "include",
       });

@@ -17,6 +17,7 @@ import {
   AlertDialogAction,
 } from "../ui/alert-dialog";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface CommentType {
   _id: string;

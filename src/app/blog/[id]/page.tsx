@@ -89,9 +89,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       if (!id) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/getData`
-        );
+        const response = await fetch(`/api/getData`);
         if (!response.ok) throw new Error("Failed to fetch data from API");
 
         const allData: DataType[] = await response.json();

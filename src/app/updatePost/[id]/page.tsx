@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "motion/react";
+import "react-toastify/dist/ReactToastify.css";
 
 const categories = [
   "Technology",
@@ -47,15 +48,12 @@ export default function CreatePostPage({
     resolveParams();
   }, [params]);
 
-  
   useEffect(() => {
-if (!id) return;
+    if (!id) return;
 
     const fetchPostData = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/updatePost/${id}`
-        );
+        const response = await fetch(`/api/updatePost/${id}`);
         const data = await response.json();
 
         if (response.ok && data.success) {

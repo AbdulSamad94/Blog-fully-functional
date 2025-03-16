@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import { easeInOut, motion } from "motion/react";
+import "react-toastify/dist/ReactToastify.css";
 
 const categories = [
   "Technology",

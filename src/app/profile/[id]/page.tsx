@@ -53,7 +53,7 @@ interface UserData {
 }
 
 const fetchUserData = async (): Promise<DataType[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/getData`, {
+  const response = await fetch(`/api/getData`, {
     cache: "no-store",
     credentials: "include",
   });
@@ -83,7 +83,7 @@ export default function ProfilePage() {
         } else {
           // If no posts found, we need to fetch user data directly
           // This would require a new API endpoint to get user by ID
-          fetch(`${process.env.NEXT_PUBLIC_URL}/api/users/${id}`)
+          fetch(`/api/users/${id}`)
             .then((res) => {
               if (!res.ok && res.status === 404) {
                 setNotFound(true);
