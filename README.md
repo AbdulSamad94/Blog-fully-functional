@@ -3,7 +3,6 @@
 A fully functional blog built with **Next.js 15**, **Tailwind CSS**, **Mongoose**, and **NextAuth.js**. Users can create, edit, and view posts with images and categories.
 
 ## Features
-
 - **Create & Edit Blog Posts**: Users can create and edit blog posts with titles, descriptions, images, and categories.
 - **Authentication**: Secure user authentication with password hashing.
 - **Image Upload**: Ability to upload and preview images for blog posts.
