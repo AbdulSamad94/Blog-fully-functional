@@ -15,16 +15,30 @@ export const PUT = async (req: Request, { params }: RouteParams) => {
     const { id: postId } = await params;
     const payload = await req.json();
 
-    const updatedPost = await Blog.findOneAndUpdate({ _id: postId }, payload, {
-      new: true,
-    });
+    // Validate payload (title, description, category are required)
+    if (!payload.title || !payload.description || !payload.category) {
+      return NextResponse.json(
+        { success: false, message: "Title, description, and category are required." },
+        { status: 400 }
+      );
+    }
 
-    if (!updatedPost) {
+    // Fetch the original post
+    const originalPost = await Blog.findById(postId);
+    if (!originalPost) {
       return NextResponse.json(
         { success: false, message: "Post not found." },
         { status: 404 }
       );
     }
+
+    // Ensure that the user updating the post is the original poster (add authorization check if needed)
+    if (originalPost.userId !== payload.userId) {
+      return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 403 });
+    }
+
+    // Update the post
+    const updatedPost = await Blog.findOneAndUpdate({ _id: postId }, payload, { new: true });
 
     return NextResponse.json({ success: true, result: updatedPost });
   } catch (error) {

@@ -61,6 +61,9 @@ export default function CreatePostPage({
 
           if (post.userId !== session?.user.id) {
             toast.error("Unauthorized access.");
+            setTimeout(() => {
+              router.push("/"); // Redirect to home page
+            }, 2000);
             return;
           }
 
