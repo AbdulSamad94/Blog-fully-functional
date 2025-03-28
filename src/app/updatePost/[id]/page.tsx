@@ -53,7 +53,7 @@ export default function CreatePostPage({
 
     const fetchPostData = async () => {
       try {
-        const response = await fetch(`/api/updatePost/${id}`);
+        const response = await fetch(`/api/private/updatePost/${id}`);
         const data = await response.json();
 
         if (response.ok && data.success) {
