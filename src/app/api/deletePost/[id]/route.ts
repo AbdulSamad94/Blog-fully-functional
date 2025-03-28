@@ -1,6 +1,8 @@
 import connectToDatabase from "@/lib/database/db_connection";
 import { Blog } from "@/lib/database/model/post";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 interface RouteParams {
     params: Promise<{
@@ -8,15 +10,34 @@ interface RouteParams {
     }>;
 }
 
-// Corrected DELETE handler for Next.js 15 with Promised params
 export const DELETE = async (req: Request, { params }: RouteParams) => {
-    try {
-        // Wait for params to resolve
-        const { id } = await params;
+    const session = await getServerSession(authOptions);
 
+    if (!session || !session.user) {
+        return NextResponse.json(
+            { success: false, message: "Unauthorized" },
+            { status: 401 }
+        );
+    }
+    try {
+        const { id: postId } = await params;
         await connectToDatabase();
 
-        const deleteResult = await Blog.deleteOne({ _id: id });
+        const originalPost = await Blog.findById(postId);
+        if (!originalPost) {
+            return NextResponse.json(
+                { success: false, message: "Post not found." },
+                { status: 404 }
+            );
+        }
+
+        const currentUserId = session.user.id;
+
+        if (originalPost.userId.toString() !== currentUserId) {
+            return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 403 });
+        }
+
+        const deleteResult = await Blog.deleteOne({ _id: postId });
 
         if (deleteResult.deletedCount === 0) {
             return NextResponse.json(
