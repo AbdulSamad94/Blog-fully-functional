@@ -1,6 +1,8 @@
 import connectToDatabase from "@/lib/database/db_connection";
 import { Blog } from "@/lib/database/model/post";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 interface RouteParams {
   params: Promise<{
@@ -9,6 +11,15 @@ interface RouteParams {
 }
 
 export const PUT = async (req: Request, { params }: RouteParams) => {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    return NextResponse.json(
+      { success: false, message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
   try {
     await connectToDatabase();
 
@@ -32,13 +43,17 @@ export const PUT = async (req: Request, { params }: RouteParams) => {
       );
     }
 
-    // Ensure that the user updating the post is the original poster (add authorization check if needed)
-    if (originalPost.userId !== payload.userId) {
+    // Get the user ID from the session
+    const currentUserId = session.user.id;
+
+    // Ensure that the user updating the post is the original poster
+    if (originalPost.userId.toString() !== currentUserId) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 403 });
     }
 
-    // Update the post
-    const updatedPost = await Blog.findOneAndUpdate({ _id: postId }, payload, { new: true });
+    // Update the post (exclude userId from payload to prevent modification)
+    const { userId, ...updateData } = payload;
+    const updatedPost = await Blog.findOneAndUpdate({ _id: postId }, updateData, { new: true });
 
     return NextResponse.json({ success: true, result: updatedPost });
   } catch (error) {
@@ -50,6 +65,7 @@ export const PUT = async (req: Request, { params }: RouteParams) => {
   }
 };
 
+// The GET route is fine as it is (assuming it's intended to be public)
 export const GET = async (req: Request, { params }: RouteParams) => {
   try {
     const { id: postId } = await params;
