@@ -86,7 +86,7 @@ export default function Dashboard() {
           <DropdownMenuContent>
             <DropdownMenuItem>
               <User2 size={20} />
-              <Link className="flex" href={`/profile/${userData.id}`}>
+              <Link className="flex" href={`/profile/${session.user.id}`}>
                 View Profile
               </Link>
             </DropdownMenuItem>
