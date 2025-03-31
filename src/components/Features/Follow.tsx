@@ -1,14 +1,13 @@
+// src/components/Features/Follow.tsx
 "use client";
 
-import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import { Plus, Check } from "lucide-react";
-
-import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 
 interface FollowButtonProps {
   targetUserId: string;
-  currentUserId: string | undefined;
+  currentUserId: string;
   isFollowing: boolean;
   followersCount: number;
 }
@@ -22,47 +21,45 @@ const FollowButton = ({
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [followersCount, setFollowersCount] = useState(initialFollowersCount);
 
-  const handleFollow = async () => {
-    if (!currentUserId) {
-      toast.error("You must be logged in to follow users.");
-      return;
-    }
+  useEffect(() => {
+    setIsFollowing(initialIsFollowing);
+    setFollowersCount(initialFollowersCount);
+  }, [initialIsFollowing, initialFollowersCount]);
 
+  const handleFollow = async () => {
     try {
       const response = await fetch("/api/updateData", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId }),
+        body: JSON.stringify({
+          targetUserId: targetUserId,
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to update followers");
 
       const result = await response.json();
-
-      setIsFollowing(result.isFollowing);
-      setFollowersCount(result.followers.length);
+      const updatedFollowers = result.followers;
+      const isFollowing = result.message.includes("Followed");
+      setFollowersCount(updatedFollowers.length);
+      setIsFollowing(isFollowing);
     } catch (error) {
       console.error("Error following user:", error);
-      toast.error("Failed to update follow status.");
     }
   };
 
   return (
-    <>
-      <button
-        onClick={handleFollow}
-        className={`flex items-center gap-2 font-semibold text-sm rounded-full transition-all duration-300 px-6 py-2 
-      ${
+    <Button
+      onClick={handleFollow}
+      className={`text-sm font-medium px-4 py-2 flex items-center gap-x-2 transition-all ${
         isFollowing
-          ? "bg-blue-600 dark:bg-blue-800 text-white shadow-lg hover:bg-blue-700 dark:hover:bg-blue-900 transform hover:scale-105"
-          : "bg-white dark:bg-slate-800 border border-blue-500 text-blue-500 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transform hover:scale-105"
+          ? "bg-gray-200 text-gray-700 border border-gray-300 hover:bg-gray-300"
+          : "bg-blue-500 text-white hover:bg-blue-600"
       }`}
-      >
-        {isFollowing ? <Check size={16} /> : <Plus size={16} />}
-        {isFollowing ? "Following" : "Follow"}
-      </button>
-      <ToastContainer />
-    </>
+    >
+      {isFollowing && <Check size={16} />}
+      {isFollowing ? "Following" : "Follow"}
+    </Button>
   );
 };
 

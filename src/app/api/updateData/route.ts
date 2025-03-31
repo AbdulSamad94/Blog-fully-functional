@@ -18,6 +18,7 @@ export async function PUT(req: Request) {
     }
 
     const { targetUserId } = await req.json();
+    console.log(targetUserId, "targetUserId");
 
     if (!targetUserId) {
       return NextResponse.json(
@@ -27,16 +28,15 @@ export async function PUT(req: Request) {
     }
 
     const currentUserId = new mongoose.Types.ObjectId(session.user.id);
-    const targetUserObjectId = new mongoose.Types.ObjectId(targetUserId);
 
-    const targetUser = await User.findById(targetUserObjectId);
+    const targetUser = await User.findById(targetUserId);
     if (!targetUser) {
       return NextResponse.json(
         { success: false, message: "Target user not found." },
         { status: 404 }
       );
     }
-
+    console.log(targetUser, "targetUser");
     const isFollowing = targetUser.followers.some(
       (followerId: mongoose.Types.ObjectId) => followerId.equals(currentUserId)
     );
@@ -49,7 +49,6 @@ export async function PUT(req: Request) {
     } else {
       targetUser.followers.push(currentUserId);
     }
-
     await targetUser.save();
 
     return NextResponse.json({
@@ -59,6 +58,7 @@ export async function PUT(req: Request) {
         : "Followed successfully.",
       followers: targetUser.followers,
       isFollowing: !isFollowing,
+      username: targetUser.name,
     });
   } catch (error) {
     console.error("Error in PUT request:", error);
