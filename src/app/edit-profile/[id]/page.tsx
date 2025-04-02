@@ -1,4 +1,4 @@
-import EditProfile from "@/components/profile/EditProfile";
+import EditProfile from "@/components/Profile/EditProfile";
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   return <EditProfile params={params} />;
