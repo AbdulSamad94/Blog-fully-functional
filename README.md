@@ -1,6 +1,5 @@
 # Blog Project
 
-
 A fully functional blog built with **Next.js 15**, **Tailwind CSS**, **Mongoose**, and **NextAuth.js**. Users can create, edit, and view posts with images and categories.
 
 ## Features
